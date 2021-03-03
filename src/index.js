@@ -1,4 +1,6 @@
 const express = require("express");
+const fs = require("fs");
+const https = require("https");
 const app = express();
 const redirect_uri = "http://localhost/api/v1";
 
@@ -10,9 +12,16 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1", require("./api/v1"));
 
-app.get("http://localhost/ap1/v1/done", (req, res) => {
-	res.json({ message: "we are done!" });
-});
-app.listen(process.env.PORT, () => {
+https
+	.createServer(
+		{
+			key: fs.readFileSync("./ssl/key.pem"),
+			cert: fs.readFileSync("./ssl/cert.pem"),
+			passphrase: "summer",
+		},
+		app
+	)
+	.listen(process.env.PORT);
+/* app.listen(process.env.PORT, () => {
 	console.log(`App now listening on port ${process.env.PORT}`);
-});
+}); */
