@@ -12,16 +12,6 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1", require("./api/v1"));
 
-https
-	.createServer(
-		{
-			key: fs.readFileSync("./ssl/key.pem"),
-			cert: fs.readFileSync("./ssl/cert.pem"),
-			passphrase: "summer",
-		},
-		app
-	)
-	.listen(process.env.PORT);
-/* app.listen(process.env.PORT, () => {
+app.listen(process.env.PORT, () => {
 	console.log(`App now listening on port ${process.env.PORT}`);
-}); */
+});

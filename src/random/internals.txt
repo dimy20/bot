@@ -1,0 +1,33 @@
+Understanding nodejs internals
+
+bootstrapping
+node/lib/internal/bootstrap/loaders.js
+
+- ************************COMMENT FROM loader.js***************************-
+
+// This file is compiled as if it's wrapped in a function with arguments
+// passed by node::RunBootstrapping()
+/* global process, getLinkedBinding, getInternalBinding, primordials */
+
+I GUESS WHAT HAPPENS HERE IS SOMEWHERE IN node/src (where the c++ files live),
+ loader.js file is wrapped in a function
+RunBootstrapping(){
+    this is where loader.js lives!
+    
+and global process, getLinkedBinding, getInternalBinding, primordials are passed to this file as args
+thats why we have access to this objects and functions whithin loader.js
+}
+
+its important to analyze this file because it is used by node/lib/internal/modules/cjs/loaders.js;
+
+
+internalBinding is definded here <-
+---------------CRITIC----------
+internalBinding calls getInternalBinding which is call by the cpp wrapper mentioned above
+and gets the module.
+One important module is the compileFunctio module
+
+brought in at line loader.js:145 with const {modulesIds,compileFunction} = internalBinding("native_module");
+?? modulesIds => maybe a bunch of constants ?
+
+for each moduleids it s
