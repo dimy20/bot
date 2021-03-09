@@ -1,28 +1,28 @@
 {
-  "name": "easy_bot",
-  "version": "1.0.0",
-  "description": "Creation of custom discord bots made easy",
-  "main": "index.js",
-  "scripts": {
-    "start": "nodemon index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dimy20/bot.git"
-  },
-  "author": "Enzo Escobar Trindade",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/dimy20/bot/issues"
-  },
-  "homepage": "https://github.com/dimy20/bot#readme",
-  "dependencies": {
-    "axios": "^0.21.1",
-    "express": "^4.17.1",
-    "tweetnacl": "^1.0.3",
-    "uuid": "^8.3.2"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.7"
-  }
+	"name": "easy_bot",
+	"version": "1.0.0",
+	"description": "Creation of custom discord bots made easy",
+	"main": "index.js",
+	"scripts": {
+		"start": "nodemon server.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/dimy20/bot.git"
+	},
+	"author": "Enzo Escobar Trindade",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/dimy20/bot/issues"
+	},
+	"homepage": "https://github.com/dimy20/bot#readme",
+	"dependencies": {
+		"axios": "^0.21.1",
+		"express": "^4.17.1",
+		"tweetnacl": "^1.0.3",
+		"uuid": "^8.3.2"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.7"
+	}
 }

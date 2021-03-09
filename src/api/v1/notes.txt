@@ -1,4 +1,4 @@
-hs = [1]
+hs = [1,2]
 names = [portal];
 
 Api Documentation:

@@ -2,7 +2,7 @@ version: "3.8"
 services:
     bot:
         build: ./src
-        container_name: bot
+        container_name: chat_server
         ports:
             - 80:80
         volumes:
@@ -10,4 +10,3 @@ services:
             - /app/node_modules
         env_file:
             - ./env/app.env
-            

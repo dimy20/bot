@@ -1,7 +1,6 @@
 const http = require("http");
-const express = require("express");
-const app = express();
-const server = http.createServer((req, res) => {
-	res.send("hello motherfucker");
+const app = require("./api/gateway");
+const server = http.createServer(app);
+server.listen(process.env.PORT, () => {
+	console.log(`Server now running on port ${process.env.PORT}`);
 });
-server.listen(1337);
