@@ -1,0 +1,13 @@
+names = [portal];
+//arquitecture
+rest api : 
+    POST api/v1/create  creates new socket (chat) linked to command (2)
+// commands details
+[] command base : 
+        command help => gives list and description of all commands availables
+        send -f <path_to_file> command for sending files
+        (2) => create room : command for creating a new chat room
+               -name <name>  : name for the chat room
+               -max <max_number> : maximum number of connection allowed
+
+            
