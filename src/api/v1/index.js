@@ -5,11 +5,12 @@ const {
 	ROOM_MAX_DURATION,
 	ROOM_DEFAULT_MAX_CONNECTIONS,
 	ROOM_MAX_CONNECTIONS_ALLOWED,
+	ROOM_DEFAULT_EXPIRATION_VALUE,
 } = require("../internals/constants/constants");
 
 console.log(
-	NAME_MAX_CHARACTERS,
-	ROOM_EXPIRATION_MAX_DURATION,
+	ROOM_NAME_MAX_CHARACTERS,
+	ROOM_MAX_DURATION,
 	ROOM_DEFAULT_MAX_CONNECTIONS,
 	ROOM_MAX_CONNECTIONS_ALLOWED
 );
@@ -27,7 +28,7 @@ function validate_expiration(exp) {
 
 	if (typeof exp === "string") {
 		if (typeof parseInt(exp) === "number") {
-			if (15 <= ROOM_MAX_DURATION) {
+			if (parseInt(exp) <= ROOM_MAX_DURATION) {
 				return parseInt(exp);
 			}
 		}
@@ -46,12 +47,21 @@ router.post("/room", (req, res) => {
 	//init defaults
 	let max_connections = ROOM_DEFAULT_MAX_CONNECTIONS;
 	let name = "random";
-	let expiration = "onUsersLeave";
+	let expiration = ROOM_DEFAULT_EXPIRATION_VALUE;
 
-	if (Boolean(req.body.expiration)) {
-		console.log(validate_expiration(req.body.expiration));
-		Boolean(validate_expiration(req.body.expiration));
+	try {
+		if (Boolean(req.body.expiration)) {
+			if (Boolean(validate_expiration(req.body.expiration))) {
+				expiration = req.body.expiration;
+			} else {
+				throw new Error("WTF?");
+			}
+		}
+	} catch (err) {
+		console.log(err.message);
+		console.log(err);
 	}
+
 	if (Boolean(name)) {
 		if (typeof req.body.name === "string") {
 			if (req.body.name.length <= ROOM_NAME_MAX_CHARACTERS) {
@@ -75,6 +85,7 @@ router.post("/room", (req, res) => {
 			//error
 		}
 	}
+
 	res.status(200).json({
 		name,
 		max_connections,
