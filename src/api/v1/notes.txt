@@ -1,13 +1,48 @@
+hs = [1]
 names = [portal];
-//arquitecture
-rest api : 
+
+Api Documentation:
+-----------------------------REST API--------------------------------cd
+    This cant be socket related stuff, this commands are to get general
+    information at given time, they cant me used to send messages, files,
+    or anything within exinsting chats, this would lose the inmediate 
+    feedback chats need.
+    They will be used for : Creating new chats
+                            Getting information from existing chats
+                            Setting up desired behaviours
+                            Terminating chats
+                            Configuaration
+                            Editing
+                            
+    ENDPOINTS:
+    GET api/v1/<room_id> | <room_name>
+        Description:
+            Responds with object containing all the details about 
+            <room_id>, that is name,id,connections, data volume?,
+                     date, time alive,expiration date
     POST api/v1/create  creates new socket (chat) linked to command (2)
-// commands details
+        Description:
+            maybe each socket could be created inside a container for
+            isolation en security.
+
+
+-----------------------------END REST API-----------------------------
+
+-----------------------------CLI TOOL---------------------------------
+// cli tool? allow developers to test stuff faster 
 [] command base : 
         command help => gives list and description of all commands availables
         send -f <path_to_file> command for sending files
-        (2) => create room : command for creating a new chat room
+        (2) => create room <room_id> : command for creating a new chat room
                -name <name>  : name for the chat room
                -max <max_number> : maximum number of connection allowed
+        (3) => get room <room_id | room_name>
+                    Responds with object containing all the details about 
+                    <room_id>, that is name,id,connections, data volume?,
+                             date, time alive,expiration date
+-----------------------------END CLI TOOL------------------------------
 
-            
+
+Research:
+    [] api security => keys,etc
+    [] cron jobs

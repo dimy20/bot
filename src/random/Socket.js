@@ -1,4 +1,3 @@
-const stream = require("stream");
 const net = require("net");
 
 const socket = new net.Socket({ writable: true });
