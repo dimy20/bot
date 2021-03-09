@@ -11,6 +11,14 @@ router.get("/:room_id", (req, res) => {
 	});
 });
 
+/*	
+
+Paramds
+-name <name>  : name for the chat room
+-max <max_number> : maximum number of connection allowed
+-expiration_date <seconds_to_terminate | date x/x/x | usersLeave>
+			<usersLeave> => room gets removed when all users leave */
+router.post("/room", (req, res) => {});
 /* 	const query_params = querystring.stringify({
 		client_id: process.env.CLIENT_ID,
 		scope: "bot",

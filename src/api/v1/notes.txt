@@ -20,10 +20,14 @@ Api Documentation:
             Responds with object containing all the details about 
             <room_id>, that is name,id,connections, data volume?,
                      date, time alive,expiration date
-    POST api/v1/create  creates new socket (chat) linked to command (2)
+    POST api/v1/room creates new socket (chat) linked to command (2)
         Description:
             maybe each socket could be created inside a container for
             isolation en security.
+       -name <name>  : name for the chat room
+       -max <max_number> : maximum number of connection allowed
+       -expiration_date <seconds_to_terminate | date x/x/x | usersLeave>
+                    <usersLeave> => room gets removed when all users leave 
 
 
 -----------------------------END REST API-----------------------------
