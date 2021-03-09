@@ -1,0 +1,4 @@
+module.exports = {
+	DEFAULT_MAX_CONNECTIONS: 4,
+	LIMIT_MAX_CONNECTIONS: 16,
+};
