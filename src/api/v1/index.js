@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const uuid = require("uuid");
+const { makeError } = require("../internals/ErrorHandlers/errorHandler");
 const {
 	ROOM_NAME_MAX_CHARACTERS,
 	ROOM_MAX_DURATION,
@@ -8,12 +9,12 @@ const {
 	ROOM_DEFAULT_EXPIRATION_VALUE,
 } = require("../internals/constants/constants");
 
-console.log(
-	ROOM_NAME_MAX_CHARACTERS,
-	ROOM_MAX_DURATION,
-	ROOM_DEFAULT_MAX_CONNECTIONS,
-	ROOM_MAX_CONNECTIONS_ALLOWED
-);
+const {
+	ROOM_EXPIRATION_ERROR,
+	ROOM_NAME_ERROR,
+	ROOM_MAX_CONNECTIONS_ERROR,
+} = require("../internals/ErrorHandlers/ErrorDefinitions");
+
 router.get("/", async (req, res) => {
 	res.send("this is a test");
 });
@@ -54,41 +55,36 @@ router.post("/room", (req, res) => {
 			if (Boolean(validate_expiration(req.body.expiration))) {
 				expiration = req.body.expiration;
 			} else {
-				throw new Error("WTF?");
+				throw makeError(ROOM_EXPIRATION_ERROR);
 			}
 		}
-	} catch (err) {
-		console.log(err.message);
-		console.log(err);
-	}
 
-	if (Boolean(name)) {
-		if (typeof req.body.name === "string") {
-			if (req.body.name.length <= ROOM_NAME_MAX_CHARACTERS) {
+		if (Boolean(name)) {
+			if (
+				typeof req.body.name === "string" &&
+				req.body.name.length <= ROOM_NAME_MAX_CHARACTERS
+			) {
 				name = req.body.name;
 			}
-			{
-				//error
-			}
-		}
-	}
-	{
-		//error
-	}
+		} else throw makeError(ROOM_NAME_ERROR);
 
-	if (Boolean(req.body.max_connections)) {
-		if (typeof req.body.max_connections === "number")
-			if (req.body.max_connections <= ROOM_DEFAULT_MAX_CONNECTIONS) {
+		//add support for intergers in string format
+		if (Boolean(req.body.max_connections)) {
+			if (
+				typeof req.body.max_connections === "number" &&
+				req.body.max_connections <= ROOM_MAX_CONNECTIONS_ALLOWED
+			)
 				max_connections = req.body.max_connections;
-			}
-		{
-			//error
+			else throw makeError(ROOM_MAX_CONNECTIONS_ERROR);
 		}
+	} catch (error) {
+		console.log(error);
 	}
 
 	res.status(200).json({
 		name,
 		max_connections,
+		expiration,
 	});
 });
 
