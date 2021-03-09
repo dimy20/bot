@@ -18,9 +18,11 @@ function MediaTypeVerify(req, res, next) {
 		const ContentType = req.headers["content-type"];
 
 		for (let i = 0; i < allowed_content_types.length; i++) {
-			if (allowed_content_types[i] === ContentType) next();
+			if (allowed_content_types[i] === ContentType) {
+				next();
+				return;
+			}
 		}
-		console.log("xd");
 		res.status(415).json({
 			message: "Invalid Conent-Type",
 		});
