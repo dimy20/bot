@@ -78,6 +78,11 @@ router.post("/room", (req, res) => {
 			else throw makeError(ROOM_MAX_CONNECTIONS_ERROR);
 		}
 	} catch (error) {
+		res.status(error.statusCode).json({
+			error: true,
+			reason: error.message,
+			default: error.default,
+		});
 		console.log(error);
 	}
 
