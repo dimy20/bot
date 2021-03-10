@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const axios = require("axios");
 const uuid = require("uuid");
 const { makeError } = require("../internals/ErrorHandlers/errorHandler");
 const {
@@ -16,7 +17,11 @@ const {
 } = require("../internals/ErrorHandlers/ErrorDefinitions");
 
 router.get("/", async (req, res) => {
-	res.send("this is a test");
+	const answer = await axios.get("http://localhost:8080/test");
+	console.log(answer.data);
+	res.json({
+		ho: "xd",
+	});
 });
 router.get("/:room_id", (req, res) => {
 	const id = req.params.room_id;

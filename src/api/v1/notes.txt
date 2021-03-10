@@ -1,4 +1,4 @@
-hs = [1,2,3,4,5]
+hs = [1,2,3,4,5,6]
 names = [portal];
 
 Api Documentation:
@@ -50,3 +50,4 @@ Api Documentation:
 Research:
     [] api security => keys,etc
     [] cron jobs
+    [] uxix sockets
