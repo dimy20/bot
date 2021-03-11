@@ -1,12 +1,11 @@
 import {IERROR} from "./errorDefinitions"
+import { errorHandler} from "./typings"
 
-function makeError(errorDefinition : IERROR) {
+errorHandler.makeError = function(errorDefinition : IERROR) : Error{
 	const error = new Error(errorDefinition.reason);
 	error.statusCode = 12;
-	error.default = errorDefinition.default;
+	error.defaultsTo= errorDefinition.default;
 	return error;
 }
+ 
 
-module.exports = {
-	makeError,
-}
