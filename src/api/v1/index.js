@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const axios = require("axios");
 const uuid = require("uuid");
+const http = require("http");
+
 const { makeError } = require("../internals/ErrorHandlers/errorHandler");
 const {
 	ROOM_NAME_MAX_CHARACTERS,
@@ -16,13 +18,37 @@ const {
 	ROOM_MAX_CONNECTIONS_ERROR,
 } = require("../internals/ErrorHandlers/ErrorDefinitions");
 
-router.get("/", async (req, res) => {
-	const answer = await axios.get("http://localhost:8080/test");
-	console.log(answer.data);
+
+router.get("/",(req,res)=>{
+
+	const request  = http.request({
+		socketPath : "/var/run/docker.sock",
+		path : "/v1.41/containers/json",
+		method : "GET"
+	},(incomingMessage)=>{
+		let raw_data;
+		incomingMessage.setEncoding("utf-8");
+		incomingMessage.on("data",(chunk)=>{
+			raw_data += chunk;
+		})
+		incomingMessage.on("end",()=>{
+	 		 const parsed_data = JSON.parse(raw_data);
+			 console.log(parsed_data);
+		})
+	})
+	request.on("error",()=>{
+		console.log(error);
+	})
+	request.end();
+
+
+
+
 	res.json({
 		ho: "xd",
 	});
-});
+})
+
 router.get("/:room_id", (req, res) => {
 	const id = req.params.room_id;
 	res.json({
