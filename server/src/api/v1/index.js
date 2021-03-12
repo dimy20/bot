@@ -2,7 +2,7 @@ const router = require("express").Router();
 const axios = require("axios");
 const uuid = require("uuid");
 const http = require("http");
-
+const querystring = require("querystring");
 const { makeError } = require("../internals/ErrorHandlers/errorHandler");
 const {
 	ROOM_NAME_MAX_CHARACTERS,
@@ -20,12 +20,29 @@ const {
 
 
 router.get("/",(req,res)=>{
+    let data = {
+    'image':"room:latest",
+    'ExposedPorts':{
+            "1337/tcp" : {}
+       }
+    }
 
-	const request  = http.request({
-		socketPath : "/var/run/docker.sock",
+    data = querystring.stringify()
+
+    const options = {
+		socketpath : "/var/run/docker.sock",
 		path : "/v1.41/containers/json",
-		method : "GET"
-	},(incomingMessage)=>{
+		method : "POST",
+        headers: {
+            'Content-Type:': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(data)
+}		
+
+}
+
+
+	const request  = http.request(options
+	,(incomingMessage)=>{
 		let raw_data = '';
 		incomingMessage.setEncoding("utf-8");
 		incomingMessage.on("data",(chunk)=>{
@@ -39,6 +56,7 @@ router.get("/",(req,res)=>{
 	request.on("error",()=>{
 		console.log(error);
 	})
+	Request.write(data);
 	request.end();
 
 
