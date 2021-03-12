@@ -26,7 +26,7 @@ router.get("/",(req,res)=>{
 		path : "/v1.41/containers/json",
 		method : "GET"
 	},(incomingMessage)=>{
-		let raw_data;
+		let raw_data = '';
 		incomingMessage.setEncoding("utf-8");
 		incomingMessage.on("data",(chunk)=>{
 			raw_data += chunk;

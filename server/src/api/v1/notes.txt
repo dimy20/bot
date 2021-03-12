@@ -46,8 +46,13 @@ Api Documentation:
                              date, time alive,expiration date
 -----------------------------END CLI TOOL------------------------------
 
+---------------------------------DEV-----------------------------------
+    POST api/v1/room launches new room container
+ 
+--------------------------------END DEV--------------------------------
 
 Research:
     [] api security => keys,etc
     [] cron jobs
     [] uxix sockets
+    [] multi threading
