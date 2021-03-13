@@ -18,8 +18,10 @@
 	"homepage": "https://github.com/dimy20/bot#readme",
 	"dependencies": {
 		"axios": "^0.21.1",
+		"dockerode": "^3.2.1",
 		"express": "^4.17.1",
 		"node-ipc": "^9.1.4",
+		"querystring": "^0.2.1",
 		"tweetnacl": "^1.0.3",
 		"uuid": "^8.3.2"
 	},

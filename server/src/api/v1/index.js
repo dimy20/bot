@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const axios = require("axios");
-const uuid = require("uuid");
 const http = require("http");
+const Docker = require("dockerode");
 const querystring = require("querystring");
 const { makeError } = require("../internals/ErrorHandlers/errorHandler");
 const {
@@ -19,48 +19,19 @@ const {
 } = require("../internals/ErrorHandlers/ErrorDefinitions");
 
 
-router.get("/",(req,res)=>{
-    let data = {
-    'image':"room:latest",
-    'ExposedPorts':{
-            "1337/tcp" : {}
-       }
-    }
+const docker = new Docker({socketPath : '/var/run/docker.sock'});
 
-    data = querystring.stringify()
-
-    const options = {
-		socketpath : "/var/run/docker.sock",
-		path : "/v1.41/containers/json",
-		method : "POST",
-        headers: {
-            'Content-Type:': 'application/x-www-form-urlencoded',
-            'Content-Length': Buffer.byteLength(data)
-}		
-
-}
+router.get("/",async (req,res)=>{
 
 
-	const request  = http.request(options
-	,(incomingMessage)=>{
-		let raw_data = '';
-		incomingMessage.setEncoding("utf-8");
-		incomingMessage.on("data",(chunk)=>{
-			raw_data += chunk;
-		})
-		incomingMessage.on("end",()=>{
-	 		 const parsed_data = JSON.parse(raw_data);
-			 console.log(parsed_data);
-		})
-	})
-	request.on("error",()=>{
-		console.log(error);
-	})
-	Request.write(data);
-	request.end();
-
-
-
+ const new_container = await docker.createContainer({
+	Image: "room:latest",
+	ExposedPorts : {
+		"80/tcp" : {}
+	},
+	name : "test_xd"
+});
+const init = await new_container.start();
 
 	res.json({
 		ho: "xd",

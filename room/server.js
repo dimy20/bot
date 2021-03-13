@@ -1,5 +1,5 @@
 const net = require("net");
-const uuid = require("uuid");
+//const uuid = require("uuid");
 
 function isConnected(connections, new_socket) {
 	if (typeof new_socket === "object" && new_socket.id != "undefined") {
