@@ -1,10 +1,51 @@
 hs = [1,2,3,4,5,6]
-names = [portal];
+names = [portal,gate];
 
+IDEAS:
+    The main idea is the ability to instatiate new chatting rooms,
+    that do not last for long and dont keep track of the conversation.
+    The maximun time thay can be availabe is 24 hrs or they get deleted
+    as soon as everyone leaves the room.
+    
+----------------------------Architecture------------------------------
+
+    The architecture consits of a nginx server in the front proxying and
+    balancing requests on layer 7 (* as a starting strategy, more on this
+    at the end of this segment ) to a container server holding a rest api
+    with endpoints for managing and creating new chatting rooms.
+
+    world <=> Nginx <=> Rest api <=> rooms
+
+   * Since rooms are containers running a socket server, load balancing
+    on layer 7 could be problem, further research on this is necessary
+    and we should take into consideration load balancing on layer 4.
+    
+     ---------        ----------      -------
+     | nginx |   <=>  |rest api|  <=> |rooms|
+     ---------        ----------      -------
+    
+    room connections are made trought the api, just as you do
+    to create one with POST api/v1/room
+    
+    room owner will be able to connect to the room, using the following
+    endpoint.
+    So the rest api forwards you to the room, allowing you to stablish a 
+    connection with it.
+    This of course raises the need for the room and the rest api sever
+    to be within the same docker network.
+    
+        http://domain_name/api/v1/connect/<room_name>?credentials=secure
+
+    
+
+    
+
+        
+----------------------------------------------------------------------
 Api Documentation:
 -----------------------------REST API--------------------------------cd
     This cant be socket related stuff, this commands are to get general
-    information at given time, they cant me used to send messages, files,
+    information at a given time, they cant me used to send messages, files,
     or anything within exinsting chats, this would lose the inmediate 
     feedback chats need.
     They will be used for : Creating new chats
@@ -22,12 +63,22 @@ Api Documentation:
                      date, time alive,expiration date
     POST api/v1/room creates new socket (chat) linked to command (2)
         Description:
-            maybe each socket could be created inside a container for
-            isolation en security.
+            Launches a new room cotainer, which conatains the room
+            running server.
+
+        Request params:
        -name <name>  : name for the chat room
        -max <max_number> : maximum number of connection allowed
-       -expiration_date <seconds_to_terminate | date x/x/x | usersLeave>
+       -expiration_date <hours_to_end | usersLeave> max = 24
                     <usersLeave> => room gets removed when all users leave 
+
+        Responds: 
+
+            Responds with the details/credentials to connect to it.
+                name : <room_name>
+                expiration : <room_expiration>
+                owner_id : <owner_id>
+                invite_key : <key other users will use to connect to the room>
 
 
 -----------------------------END REST API-----------------------------
@@ -48,7 +99,7 @@ Api Documentation:
 
 ---------------------------------DEV-----------------------------------
     POST api/v1/room launches new room container
- 
+     
 --------------------------------END DEV--------------------------------
 
 Research:
