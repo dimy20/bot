@@ -25,13 +25,18 @@ router.get("/",async (req,res)=>{
 
 
  const new_container = await docker.createContainer({
-	Image: "room:latest",
-	ExposedPorts : {
-		"80/tcp" : {}
-	},
-	name : "test_xd"
+	 HostConfig:{
+		 PortBindings : {
+			 "5000/tcp": [{
+					"HostPort" : "5000"
+			 }]
+		 }
+	 },
+	Image: "connection:latest",
+	name : "connection_test"
 });
-const init = await new_container.start();
+await new_container.start({
+});
 
 	res.json({
 		ho: "xd",
@@ -112,11 +117,5 @@ router.post("/room", (req, res) => {
 		expiration,
 	});
 });
-
-/* 	const query_params = querystring.stringify({
-		client_id: process.env.CLIENT_ID,
-		scope: "bot",
-		permissions: 1,
-	}); */
 
 module.exports = router;
