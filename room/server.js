@@ -30,8 +30,9 @@ function broadcast(connections, server_socket) {
 }
 let connections = [];
 const server = net.createServer((socket) => {
+    console.log(socket);
 	// use better ids
-	socket.id = uuid.v1();
+//	socket.id = uuid.v1();
 	if (!isConnected(connections, socket)) {
 		connections.push(socket);
 		socket.write("you have connected \n");
@@ -42,4 +43,5 @@ const server = net.createServer((socket) => {
 		console.log(`data received from  ${socket.id}: `, data);
 	});
 });
-server.listen(1337, "127.0.0.1");
+// having 127.0.0.1 was the problem, investigate why
+server.listen(1337, "0.0.0.0");

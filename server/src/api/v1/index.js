@@ -27,13 +27,13 @@ router.get("/",async (req,res)=>{
  const new_container = await docker.createContainer({
 	 HostConfig:{
 		 PortBindings : {
-			 "5000/tcp": [{
-					"HostPort" : "5000"
+			 "1337/tcp": [{
+					"HostPort" : "1337"
 			 }]
 		 }
 	 },
-	Image: "connection:latest",
-	name : "connection_test"
+	Image: "room:latest",
+	name : "room"
 });
 await new_container.start({
 });
