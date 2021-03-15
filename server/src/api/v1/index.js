@@ -4,6 +4,7 @@ const http = require("http");
 const Docker = require("dockerode");
 const querystring = require("querystring");
 const { makeError } = require("../internals/ErrorHandlers/errorHandler");
+const net = require("net");
 const {
 	ROOM_NAME_MAX_CHARACTERS,
 	ROOM_MAX_DURATION,
@@ -62,6 +63,25 @@ function validate_expiration(exp) {
 	}
 	return false;
 }
+/*
+    This endpoint acts a proxy, tunneling tcp connections to an specific
+    existing room.
+ 
+    forwards connection to rooom, allowing clients to connect with the
+    room they just created.
+    This makes some checks to see if room is still available, and some
+    authentication should be provided to indentify thw owner.
+    Invite users cant make use of this endpoint to connect with the room.
+
+*/
+router.get("/connect/:room_id",(req,res)=>{
+    const server = net.createServer((socket)=>{
+    socket.write("hello motherfucker");
+    socket.pip(socket);
+    socket.on("data",(data)=>{console.log(data)});
+    server.liste(8080,"0.0.0.0");
+})
+})
 /*	
 
 Paramds

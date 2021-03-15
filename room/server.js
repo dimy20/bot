@@ -1,5 +1,36 @@
 const net = require("net");
-//const uuid = require("uuid");
+const http = require("http");
+const app = require("express")();
+const webSocketServer = require("websocket").server;
+const server = http.createServer(app);
+
+app.get("/",(req,res)=>{res.json({msg:"hello"})});
+
+server.listen(80);
+
+// upgrade-to request headers upgradres to wbsocket protocol
+
+const wsServer = new webSocketServer({httpServer : server, autoAcceptConnections : false});
+
+wsServer.on("request",(request)=>{
+         const connection = request.accept("echo-protocol",request.origin);
+            console.log(request.url);
+
+         connection.on('message', function(message) {
+                if (message.type === 'utf8') {
+                    console.log('Received Message: ' + message.utf8Data);
+                    connection.sendUTF(message.utf8Data);
+                }
+                else if (message.type === 'binary') {
+                    console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
+                    connection.sendBytes(message.binaryData);
+                }
+            });
+            connection.on('close', function(reasonCode, description) {
+                console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+            });
+})
+
 
 function isConnected(connections, new_socket) {
 	if (typeof new_socket === "object" && new_socket.id != "undefined") {
@@ -11,6 +42,7 @@ function isConnected(connections, new_socket) {
 	}
 	return false;
 }
+
 /*
     upon connection, a message must be sent to all connected users
     except the recently connected user notifying the new connected user 
@@ -28,11 +60,9 @@ function broadcast(connections, server_socket) {
 		}
 	}
 }
-let connections = [];
+/*let connections = [];
 const server = net.createServer((socket) => {
-    console.log(socket);
-	// use better ids
-//	socket.id = uuid.v1();
+    console.log(socket.url);
 	if (!isConnected(connections, socket)) {
 		connections.push(socket);
 		socket.write("you have connected \n");
@@ -43,5 +73,3 @@ const server = net.createServer((socket) => {
 		console.log(`data received from  ${socket.id}: `, data);
 	});
 });
-// having 127.0.0.1 was the problem, investigate why
-server.listen(1337, "0.0.0.0");

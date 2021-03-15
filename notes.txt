@@ -61,6 +61,8 @@ Api Documentation:
             Responds with object containing all the details about 
             <room_id>, that is name,id,connections, data volume?,
                      date, time alive,expiration date
+
+    GET api/v1/connect/<room_id>
     POST api/v1/room creates new socket (chat) linked to command (2)
         Description:
             Launches a new room cotainer, which conatains the room
