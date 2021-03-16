@@ -17,12 +17,13 @@ function get_sec_websocket_key(){
         const random = random_range(CODE_MIN,CODE_MAX);
         res = res + String.fromCharCode(random);
         }
-    return Buffer.from(res).toString("base64");
+    const buff = Buffer.from(res);
+    return buff.toString("base64");
 }
-const key = get_sec_websocket_key();
-console.log(key);
 
-/*const options = {
+const key = get_sec_websocket_key();
+
+const options = {
     host:"localhost",
     port:80,
     method:"GET",
@@ -36,10 +37,12 @@ console.log(key);
 }
 
 const req = http.request(options,(res)=>{
+    console.log(res.headers);
     res.on("data",(data)=>{
+        console.log(res.statusCode);
         console.log(data);
      })
     req.on('error',error=>{console.log(error)});
 })
 
-req.end();*/
+req.end();
