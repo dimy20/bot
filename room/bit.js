@@ -21,9 +21,7 @@ function is_set(n){
     return null;
 }
 
-console.log(break_into_bits(129));
-console.log(break_into_bits(0xf));
-const opcode = 129 & 0xf;
-console.log(opcode);
+console.log(0x7f);
+console.log(break_into_bits(0x7f));
 
 

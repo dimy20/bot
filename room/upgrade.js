@@ -97,6 +97,21 @@ function parseIncomingFrame(buffer){
 
     // 0x8 denotes a connection close opcode 
     if(opcode === 0x8) return null;
+    // we are only handling text files for now
+    if(opcode!= 0x1) return;
+    
+    const secondByte = buffer.readUInt8(1);
+    const is_masked = Boolean((secondByte >>> 7) & 0x1);
+
+
+   /* payload lengtth : 
+        0-125 is present those bits represent the payload length
+        if bits are the value 126 : the next 16 bits are used to store the payload length
+        if bits are the value 127 : an 8 byte payload length is used to store the length (very big)
+
+    */
+        
+
 
 }
     
