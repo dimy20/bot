@@ -2,7 +2,7 @@ const WebSocket = require("ws");
 const ws = new WebSocket('ws://localhost',['json']);
 // Add a listener that will be triggered when the WebSocket is ready to use
 ws.addEventListener('open', () => {
-  const data = { message: 'Hello from the client!' }
+  const data = { message: 'Hello' }
   const json = JSON.stringify(data);
   // Send the message to the WebSocket server
   ws.send(json);
