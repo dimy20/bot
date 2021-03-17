@@ -62,13 +62,42 @@ function handshake(headers){
 */
 
 function parseIncomingFrame(buffer){
-    console.log(buffer);
+    /*
+        The first byte is broke down into 3 sections of bits.
+        -> The final bit representing the final frame. 
+        -> the next 3 bits for the reserved flags 
+        -> The remaining 4 bits for the operation code, (opcode)
+        opcode defines how we should handle the payload data, if an unknown opcode is sent to 
+        the server, the connection must fail.
+        OPCODES TABLE
+        
+        opcode interpretation
+        ------|----------- 
+        %x0  : continuation frame
+        %x1  :  text frame
+        %x2  : binary frame
+        %x3–7 : reserved for further non-control frames
+        %x8  : connection close
+        %x9  : ping
+        %xA  : pong
+        %xB-F : reserved for further control frames
+    */
     const firstByte = buffer.readUInt8(0); //  ---- ----
 
     const isFinalFrame = Boolean((firstByte >>> 7) && 0x1);
-    const reserved1 =  Boolean((firstByte >>> 6 ) && 0x1);
-    const reserved2 =  Boolean((firstByte >>> 5) && 0x1);
-    const reserved3 =  Boolean((firstByte >>> 4) && 0x1);
+    //check reserved flags
+    //0 0 0 0 x x x 0
+    const flag1=  Boolean((firstByte >>> 6 ) && 0x1);
+    const flag2=  Boolean((firstByte >>> 5) && 0x1);
+    const flag3=  Boolean((firstByte >>> 4) && 0x1);
+
+    // x x x x 0 0 0 0
+    // we need to check the last 4 remaining bits whick are reserved for the op code,
+    const opcode = firstByte & 0xf;
+
+    // 0x8 denotes a connection close opcode 
+    if(opcode === 0x8) return null;
+
 }
     
 server.listen(80);

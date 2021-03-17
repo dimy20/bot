@@ -21,12 +21,9 @@ function is_set(n){
     return null;
 }
 
-console.log(129);
-console.log(break_into_bits(192));
-const r_shifted = 192 >> 5;
-console.log(r_shifted);
-console.log(break_into_bits(r_shifted));
-console.log(break_into_bits(0x1));
-console.log(r_shifted & 0x1);
+console.log(break_into_bits(129));
+console.log(break_into_bits(0xf));
+const opcode = 129 & 0xf;
+console.log(opcode);
 
 
