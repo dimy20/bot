@@ -5,6 +5,7 @@ const Docker = require("dockerode");
 const querystring = require("querystring");
 const { makeError } = require("../internals/ErrorHandlers/errorHandler");
 const net = require("net");
+
 const {
 	ROOM_NAME_MAX_CHARACTERS,
 	ROOM_MAX_DURATION,
@@ -75,12 +76,6 @@ function validate_expiration(exp) {
 
 */
 router.get("/connect/:room_id",(req,res)=>{
-    const server = net.createServer((socket)=>{
-    socket.write("hello motherfucker");
-    socket.pip(socket);
-    socket.on("data",(data)=>{console.log(data)});
-    server.liste(8080,"0.0.0.0");
-})
 })
 /*	
 

@@ -1,3 +1,6 @@
+/*
+    This is an incomplete WebSocket implementation made for learning purposes only.
+*/
 const http = require("http");
 const crypto = require("crypto");
 
@@ -6,7 +9,7 @@ const server = http.createServer((req,res)=>{
 
 server.on("upgrade",(req,socket)=>{
     if (req.headers['upgrade'] !== 'websocket') {
-    socket.end('HTTP/1.1 400 Bad Request');
+    socket.end(`HTTP/1.1 400 Bad Request`);
     return;
     }
     const res_headers = handshake(req.headers);

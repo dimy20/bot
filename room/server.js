@@ -1,35 +1,21 @@
 const net = require("net");
 const http = require("http");
-const app = require("express")();
-const webSocketServer = require("websocket").server;
-const server = http.createServer(app);
+const WebSocket = require("ws");
 
-app.get("/",(req,res)=>{res.json({msg:"hello"})});
 
-server.listen(80);
+const ws= new WebSocket.Server({ port: 1337});
 
-// upgrade-to request headers upgradres to wbsocket protocol
+ws.on('connection', function connection(socket) {
 
-const wsServer = new webSocketServer({httpServer : server, autoAcceptConnections : false});
+  socket.on('message', function incoming(message) {
+    console.log('received: %s', message);
+  });
 
-wsServer.on("request",(request)=>{
-         const connection = request.accept("echo-protocol",request.origin);
-            console.log(request.url);
+  socket.send('something');
+});
 
-         connection.on('message', function(message) {
-                if (message.type === 'utf8') {
-                    console.log('Received Message: ' + message.utf8Data);
-                    connection.sendUTF(message.utf8Data);
-                }
-                else if (message.type === 'binary') {
-                    console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
-                    connection.sendBytes(message.binaryData);
-                }
-            });
-            connection.on('close', function(reasonCode, description) {
-                console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
-            });
-})
+
+
 
 
 function isConnected(connections, new_socket) {
@@ -60,16 +46,3 @@ function broadcast(connections, server_socket) {
 		}
 	}
 }
-/*let connections = [];
-const server = net.createServer((socket) => {
-    console.log(socket.url);
-	if (!isConnected(connections, socket)) {
-		connections.push(socket);
-		socket.write("you have connected \n");
-		socket.pipe(socket);
-	}
-	broadcast(connections, socket);
-	socket.on("data", (data) => {
-		console.log(`data received from  ${socket.id}: `, data);
-	});
-});
