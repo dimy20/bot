@@ -62,6 +62,7 @@ function handshake(headers){
 */
 
 function parseIncomingFrame(buffer){
+    console.log(buffer.toString("utf-8"));
     /*
         The first byte is broke down into 3 sections of bits.
         -> The final bit representing the final frame. 
@@ -102,6 +103,7 @@ function parseIncomingFrame(buffer){
     
     const secondByte = buffer.readUInt8(1);
     const is_masked = Boolean((secondByte >>> 7) & 0x1);
+    
 
 
    /* payload lengtth : 
@@ -110,7 +112,38 @@ function parseIncomingFrame(buffer){
         if bits are the value 127 : an 8 byte payload length is used to store the length (very big)
 
     */
-        
+    let offset = 2;
+    const payload_length = secondByte & 0x7f;
+
+    if(payload_length === 126){
+        payload_length = buffer.readUInt16BE(offset);
+        offset+=2;
+    }
+
+    // very big frame!
+    if(payload_length === 127){
+        const first_4_bytes = buffer.readUInt16BE(offset);
+        offset +=4;
+        const second_4_bytes = buffer.readUInt16BE(offset);
+
+    }
+    if(!is_masked) return null;
+
+        const mask_key  = buffer.readUInt32BE(offset);
+        offset+=4;
+
+    
+    for(let i =0, j = 0; i< payload_length ; i++, j = i % 4){
+        const shift = (j == 3 ? 0 : (3 -j)  << 3);
+        const mask = (shift === 0 ? mask_key : (mask_key >>> shift)) & 0xff;
+        const source = buffer.readUInt8(offset++);
+        const xored =  mask ^ source;
+        buffer.writeUInt8(xored,i);
+}
+        const payload= buffer.toString("utf-8");
+        const json = JSON.parse(payload);
+        console.log(json);
+
 
 
 }
