@@ -10,16 +10,19 @@ const CODE_UNAUTHORIZED = 401;
 const CODE_FORBIDDEN_RESOURCE = 403;
 const CODE_NOT_FOUND = 404;
 const CODE_OK = 200;
+const CODE_INTERNAL_ERROR = 500; 
 
 // ERROR REASONS
 const REASON_ROOM_EXPIRATION_ERROR ="bad expiration value, expiration value must be an integer less than or equal to 43800 or the reserved string";
-const REASON_ROOM_NAME_ERROR = "bad name value, name value must a string with less than or equal to 50 characters",
+const REASON_ROOM_NAME_ERROR = "bad name value, name value must a string with less than or equal to 50 characters";
 const REASON_ROOM_MAX_CONNECTIONS_ERROR = "bad max_connections value, max_connections value must be an interger bigger than 1 and less than or equal to 16";
+const REASON_ROOM_CREATION_ERROR= "An internal error ocurred while initializing the room chat";
 
-// Error names
-const MESSAGE_ROOM_EXPIRATION_ERROR = "room expiration error";
-const MESSAGE_ROOM_NAME_ERROR="room name error"
-const MESSAGE_ROOM_MAX_CONNECTIONS_ERROR= "room max connections error";
+// ERROR NAMES 
+const MESSAGE_ROOM_EXPIRATION_ERROR = "invalid expiration value";
+const MESSAGE_ROOM_NAME_ERROR="invalid name value"
+const MESSAGE_ROOM_MAX_CONNECTIONS_ERROR= "invalid max_connections value";
+const MESSAGE_ROOM_CREATION_ERROR = "room initialization error";
 
 module.exports = {
 	ROOM_NAME_MAX_CHARACTERS,
@@ -27,16 +30,19 @@ module.exports = {
 	ROOM_DEFAULT_MAX_CONNECTIONS,
 	ROOM_MAX_CONNECTIONS_ALLOWED,
 	ROOM_DEFAULT_EXPIRATION_VALUE,
-    CODE_BAD_REQUEST 
+    CODE_BAD_REQUEST,
     CODE_UNAUTHORIZED,
     CODE_FORBIDDEN_RESOURCE, 
     CODE_NOT_FOUND,
     CODE_OK,
+    CODE_INTERNAL_ERROR,
     REASON_ROOM_EXPIRATION_ERROR,
     REASON_ROOM_NAME_ERROR, 
     REASON_ROOM_MAX_CONNECTIONS_ERROR,
+    REASON_ROOM_CREATION_ERROR,
     MESSAGE_ROOM_EXPIRATION_ERROR,
     MESSAGE_ROOM_NAME_ERROR,
+    MESSAGE_ROOM_CREATION_ERROR,
     MESSAGE_ROOM_MAX_CONNECTIONS_ERROR,
 };
 

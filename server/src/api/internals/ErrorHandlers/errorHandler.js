@@ -1,7 +1,8 @@
-function makeError(statusCode,reason,default,message) {
+// Reponse errors
+function makeError(statusCode,reason,defaults,message) {
 	const error = new Error(message);
 	error.statusCode = statusCode;
-	error.default = default;
+	error.default = defaults;
     error.reason = reason;
 	return error;
 }

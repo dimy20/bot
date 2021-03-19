@@ -1,31 +1,25 @@
 const router = require("express").Router();
-const axios = require("axios");
-const http = require("http");
-const Docker = require("dockerode");
-const querystring = require("querystring");
 const { makeError } = require("../internals/ErrorHandlers/errorHandler");
-const net = require("net");
-
+const {createRoom} = require("../internals/Bootstrapping/container")
 const {
 	ROOM_NAME_MAX_CHARACTERS,
 	ROOM_MAX_DURATION,
 	ROOM_DEFAULT_MAX_CONNECTIONS,
 	ROOM_MAX_CONNECTIONS_ALLOWED,
 	ROOM_DEFAULT_EXPIRATION_VALUE,
-    CODE_BAD_REQUEST 
-    CODE_UNAUTHORIZED,
-    CODE_FORBIDDEN_RESOURCE, 
-    CODE_NOT_FOUND,
-    CODE_OK,
+    CODE_BAD_REQUEST,
+	CODE_INTERNAL_ERROR,
     REASON_ROOM_EXPIRATION_ERROR,
     REASON_ROOM_NAME_ERROR, 
     REASON_ROOM_MAX_CONNECTIONS_ERROR,
     MESSAGE_ROOM_EXPIRATION_ERROR,
     MESSAGE_ROOM_NAME_ERROR,
     MESSAGE_ROOM_MAX_CONNECTIONS_ERROR,
+	MESSAGE_ROOM_CREATION_ERROR,
+	REASON_ROOM_CREATION_ERROR
 } = require("../internals/constants/constants");
 
-const docker = new Docker({socketPath : '/var/run/docker.sock'});
+
 
 // this will change of course
 router.get("/",async (req,res)=>{
@@ -74,7 +68,8 @@ Paramds
 -max <max_number> : maximum number of connection allowed
 -expiration_date <seconds_to_terminate | date x/x/x | usersLeave>
 			<usersLeave> => room gets removed when all users leave */
-router.post("/room", (req, res) => {
+router.post("/room", async (req, res) => {
+	console.log("hits endpoint");
 	//init defaults
 	let max_connections = ROOM_DEFAULT_MAX_CONNECTIONS;
 	let name = "random";
@@ -89,52 +84,50 @@ router.post("/room", (req, res) => {
 			}
 		}
 
-		if (Boolean(name)) {
+		if (Boolean(req.body.name)) {
 			if (
 				typeof req.body.name === "string" &&
 				req.body.name.length <= ROOM_NAME_MAX_CHARACTERS
 			) {
 				name = req.body.name;
 			}
-		} else throw makeError(CODE_BAD_REQUEST,ROOM_NAME_MAX_CHARACTERS,REASON_ROOM_NAME_ERROR,MESSAGE_ROOM_NAME_ERROR);
+		 	else throw makeError(CODE_BAD_REQUEST,ROOM_NAME_MAX_CHARACTERS,REASON_ROOM_NAME_ERROR,MESSAGE_ROOM_NAME_ERROR);
+		}
+			
 
 		//add support for intergers in string format
 		if (Boolean(req.body.max_connections)) {
+			let max_conn_placeholder = typeof req.body.max_connections === 'string' ? parseInt(req.body.max_connections) : req.body.max_connections;
 			if (
-				typeof req.body.max_connections === "number" &&
-				req.body.max_connections <= ROOM_MAX_CONNECTIONS_ALLOWED
+				typeof max_conn_placeholder === "number" &&
+				max_conn_placeholder <= ROOM_MAX_CONNECTIONS_ALLOWED
 			)
-				max_connections = req.body.max_connections;
-			else throw makeError(CODE_BAD_REQUEST,ROOM_MAX_CONNECTIONS_ALLOWED,REASON_MAX_CONNECTIONS_ERROR,MESSAGE_ROOM_MAX_CONNECTIONS_ERROR);
+				max_connections = max_conn_placeholder; 
+			else throw makeError(CODE_BAD_REQUEST,ROOM_MAX_CONNECTIONS_ALLOWED,REASON_ROOM_MAX_CONNECTIONS_ERROR,MESSAGE_ROOM_MAX_CONNECTIONS_ERROR);
 		}
+
+			createRoom(name);
+
+
 	} catch (error) {
 		res.status(error.statusCode).json({
-			error: true,
-			reason: error.message,
+			error: error.message,
+			reason: error.reason,
 			default: error.default,
 		});
-		console.log(error);
 	}
     
 
-    const new_container = await docker.createContainer({
-             HostConfig:{
-                 PortBindings : {
-                     "1337/tcp": [{
-                            "HostPort" : "1337"
-                     }]
-                 }
-             },
-            Image: "room:latest",
-            name : `room_${name}`
-    });
-    await new_container.start({});
 
+/* 		res.status(CODE_INTERNAL_ERROR).json({
+			name : MESSAGE_ROOM_CREATION_ERROR,
+			reason: REASON_ROOM_CREATION_ERROR,
+		}) */
 	res.status(200).json({
 		name,
 		max_connections,
 		expiration,
-        
+		connection_url: `ws://${process.env.DOMAIN_NAME}`
 	});
 });
 
