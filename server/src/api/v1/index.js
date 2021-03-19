@@ -1,22 +1,20 @@
 const router = require("express").Router();
 const { makeError } = require("../internals/ErrorHandlers/errorHandler");
 const {createRoom} = require("../internals/Bootstrapping/container")
+const {validate_room_name,validate_expiration} = require("../internals/ErrorHandlers/validation");
 const {
-	ROOM_NAME_MAX_CHARACTERS,
 	ROOM_MAX_DURATION,
 	ROOM_DEFAULT_MAX_CONNECTIONS,
 	ROOM_MAX_CONNECTIONS_ALLOWED,
 	ROOM_DEFAULT_EXPIRATION_VALUE,
     CODE_BAD_REQUEST,
-	CODE_INTERNAL_ERROR,
+	ROOM_DEFAULT_NAME,
     REASON_ROOM_EXPIRATION_ERROR,
     REASON_ROOM_NAME_ERROR, 
     REASON_ROOM_MAX_CONNECTIONS_ERROR,
     MESSAGE_ROOM_EXPIRATION_ERROR,
     MESSAGE_ROOM_NAME_ERROR,
     MESSAGE_ROOM_MAX_CONNECTIONS_ERROR,
-	MESSAGE_ROOM_CREATION_ERROR,
-	REASON_ROOM_CREATION_ERROR
 } = require("../internals/constants/constants");
 
 
@@ -34,19 +32,7 @@ router.get("/:room_id", (req, res) => {
 		id,
 	});
 });
-function validate_expiration(exp) {
-	if (typeof exp === "number" && exp <= ROOM_MAX_DURATION) return exp;
 
-	if (typeof exp === "string") {
-		if (typeof parseInt(exp) === "number") {
-			if (parseInt(exp) <= ROOM_MAX_DURATION) {
-				return parseInt(exp);
-			}
-		}
-		if (exp === "onUsersLeave") return exp;
-	}
-	return false;
-}
 /*
     This endpoint acts a proxy, tunneling tcp connections to an specific
     existing room.
@@ -68,6 +54,7 @@ Paramds
 -max <max_number> : maximum number of connection allowed
 -expiration_date <seconds_to_terminate | date x/x/x | usersLeave>
 			<usersLeave> => room gets removed when all users leave */
+
 router.post("/room", async (req, res) => {
 	console.log("hits endpoint");
 	//init defaults
@@ -85,15 +72,11 @@ router.post("/room", async (req, res) => {
 		}
 
 		if (Boolean(req.body.name)) {
-			if (
-				typeof req.body.name === "string" &&
-				req.body.name.length <= ROOM_NAME_MAX_CHARACTERS
-			) {
-				name = req.body.name;
-			}
-		 	else throw makeError(CODE_BAD_REQUEST,ROOM_NAME_MAX_CHARACTERS,REASON_ROOM_NAME_ERROR,MESSAGE_ROOM_NAME_ERROR);
+				if(validate_room_name(req.body.name)){
+					name = req.body.name;
+				}
+		 	else throw makeError(CODE_BAD_REQUEST,REASON_ROOM_NAME_ERROR,ROOM_DEFAULT_NAME,MESSAGE_ROOM_NAME_ERROR);
 		}
-			
 
 		//add support for intergers in string format
 		if (Boolean(req.body.max_connections)) {

@@ -1,7 +1,6 @@
 const Docker = require("dockerode");
 const ROOM_IMAGE = "room:latest";
 const docker = new Docker({socketPath : process.env.DOCKER_SOCKET_PATH});
-
 async function createRoom(name){
     try {
             const chat_room = await docker.createContainer({
@@ -17,7 +16,8 @@ async function createRoom(name){
         });
         const instance = await chat_room.start({});
     } catch (error) {
-            console.log(error);
+            console.log(error.status);
+            console.log(error.message);
     }
 }
 module.exports={
