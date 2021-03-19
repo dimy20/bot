@@ -12,22 +12,23 @@ const {
 	ROOM_DEFAULT_MAX_CONNECTIONS,
 	ROOM_MAX_CONNECTIONS_ALLOWED,
 	ROOM_DEFAULT_EXPIRATION_VALUE,
+    CODE_BAD_REQUEST 
+    CODE_UNAUTHORIZED,
+    CODE_FORBIDDEN_RESOURCE, 
+    CODE_NOT_FOUND,
+    CODE_OK,
+    REASON_ROOM_EXPIRATION_ERROR,
+    REASON_ROOM_NAME_ERROR, 
+    REASON_ROOM_MAX_CONNECTIONS_ERROR,
+    MESSAGE_ROOM_EXPIRATION_ERROR,
+    MESSAGE_ROOM_NAME_ERROR,
+    MESSAGE_ROOM_MAX_CONNECTIONS_ERROR,
 } = require("../internals/constants/constants");
-
-
-const {
-	ROOM_EXPIRATION_ERROR,
-	ROOM_NAME_ERROR,
-	ROOM_MAX_CONNECTIONS_ERROR,
-} = require("../internals/ErrorHandlers/ErrorDefinitions");
-
 
 const docker = new Docker({socketPath : '/var/run/docker.sock'});
 
 // this will change of course
 router.get("/",async (req,res)=>{
-
-
 	res.json({
 		ho: "xd",
 	});
@@ -65,8 +66,7 @@ function validate_expiration(exp) {
 */
 
 // to be implemented!
-router.get("/connect/:room_id",(req,res)=>{
-})
+router.get("/connect/:room_id",(req,res)=>{});
 /*	
 
 Paramds
@@ -85,7 +85,7 @@ router.post("/room", (req, res) => {
 			if (Boolean(validate_expiration(req.body.expiration))) {
 				expiration = req.body.expiration;
 			} else {
-				throw makeError(ROOM_EXPIRATION_ERROR);
+				throw makeError(CODE_BAD_REQUEST,ROOM_MAX_DURATION,REASON_ROOM_EXPIRATION_ERROR,MESSAGE_ROOM_EXPIRATION_ERROR);
 			}
 		}
 
@@ -96,7 +96,7 @@ router.post("/room", (req, res) => {
 			) {
 				name = req.body.name;
 			}
-		} else throw makeError(ROOM_NAME_ERROR);
+		} else throw makeError(CODE_BAD_REQUEST,ROOM_NAME_MAX_CHARACTERS,REASON_ROOM_NAME_ERROR,MESSAGE_ROOM_NAME_ERROR);
 
 		//add support for intergers in string format
 		if (Boolean(req.body.max_connections)) {
@@ -105,7 +105,7 @@ router.post("/room", (req, res) => {
 				req.body.max_connections <= ROOM_MAX_CONNECTIONS_ALLOWED
 			)
 				max_connections = req.body.max_connections;
-			else throw makeError(ROOM_MAX_CONNECTIONS_ERROR);
+			else throw makeError(CODE_BAD_REQUEST,ROOM_MAX_CONNECTIONS_ALLOWED,REASON_MAX_CONNECTIONS_ERROR,MESSAGE_ROOM_MAX_CONNECTIONS_ERROR);
 		}
 	} catch (error) {
 		res.status(error.statusCode).json({
