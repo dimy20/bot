@@ -1,13 +1,22 @@
 version: "3.8"
 services:
-    bot:
+    chat_server:
         build: ./src
         container_name: chat_server
-        ports:
-            - 80:80
         volumes:
             - ./src/:/app
             - /app/node_modules
             - /var/run/docker.sock:/var/run/docker.sock
         env_file:
             - ./env/app.env
+    nginx:
+        container_name: nginx
+        image: nginx
+        ports:
+            - 80:80
+        volumes:
+            - type: bind 
+              source: ./conf/nginx.conf 
+              target: /etc/nginx/nginx.conf
+        depends_on:
+            - chat_server

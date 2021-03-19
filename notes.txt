@@ -24,23 +24,7 @@ IDEAS:
      | nginx |   <=>  |rest api|  <=> |rooms|
      ---------        ----------      -------
     
-    room connections are made trought the api, just as you do
-    to create one with POST api/v1/room
     
-    room owner will be able to connect to the room, using the following
-    endpoint.
-    So the rest api forwards you to the room, allowing you to stablish a 
-    connection with it.
-    This of course raises the need for the room and the rest api sever
-    to be within the same docker network.
-    
-        http://domain_name/api/v1/connect/<room_name>?credentials=secure
-
-    
-
-    
-
-        
 ----------------------------------------------------------------------
 Api Documentation:
 -----------------------------REST API--------------------------------cd
@@ -81,7 +65,7 @@ Api Documentation:
                 expiration : <room_expiration>
                 owner_id : <owner_id>
                 invite_key : <key other users will use to connect to the room>
-
+                chat: ws://domain.name/<room_id>
 
 -----------------------------END REST API-----------------------------
 
