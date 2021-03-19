@@ -2,6 +2,9 @@ const router = require("express").Router();
 const { makeError } = require("../internals/ErrorHandlers/errorHandler");
 const {createRoom} = require("../internals/Bootstrapping/container")
 const {validate_room_name,validate_expiration,validate_max_connections} = require("../internals/ErrorHandlers/validation");
+
+ 
+ 
 const {
 	ROOM_MAX_DURATION,
 	ROOM_DEFAULT_MAX_CONNECTIONS,
@@ -21,8 +24,9 @@ const {
 
 // this will change of course
 router.get("/",async (req,res)=>{
+	
 	res.json({
-		ho: "xd",
+		ho: xd,
 	});
 })
 
