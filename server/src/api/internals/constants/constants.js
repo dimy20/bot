@@ -24,6 +24,7 @@ const MESSAGE_ROOM_NAME_ERROR="invalid name value"
 const MESSAGE_ROOM_MAX_CONNECTIONS_ERROR= "invalid max_connections value";
 const MESSAGE_ROOM_CREATION_ERROR = "room initialization error";
 
+// IMAGES
 module.exports = {
 	ROOM_NAME_MAX_CHARACTERS,
 	ROOM_MAX_DURATION,

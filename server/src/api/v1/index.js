@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const { makeError } = require("../internals/ErrorHandlers/errorHandler");
 const {createRoom} = require("../internals/Bootstrapping/container")
-const {validate_room_name,validate_expiration} = require("../internals/ErrorHandlers/validation");
+const {validate_room_name,validate_expiration,validate_max_connections} = require("../internals/ErrorHandlers/validation");
 const {
 	ROOM_MAX_DURATION,
 	ROOM_DEFAULT_MAX_CONNECTIONS,
@@ -56,7 +56,6 @@ Paramds
 			<usersLeave> => room gets removed when all users leave */
 
 router.post("/room", async (req, res) => {
-	console.log("hits endpoint");
 	//init defaults
 	let max_connections = ROOM_DEFAULT_MAX_CONNECTIONS;
 	let name = "random";
@@ -80,19 +79,17 @@ router.post("/room", async (req, res) => {
 
 		//add support for intergers in string format
 		if (Boolean(req.body.max_connections)) {
-			let max_conn_placeholder = typeof req.body.max_connections === 'string' ? parseInt(req.body.max_connections) : req.body.max_connections;
-			if (
-				typeof max_conn_placeholder === "number" &&
-				max_conn_placeholder <= ROOM_MAX_CONNECTIONS_ALLOWED
-			)
-				max_connections = max_conn_placeholder; 
+				if(validate_max_connections(req.body.max_connections))
+					max_connections = req.body.max_connections; 
 			else throw makeError(CODE_BAD_REQUEST,ROOM_MAX_CONNECTIONS_ALLOWED,REASON_ROOM_MAX_CONNECTIONS_ERROR,MESSAGE_ROOM_MAX_CONNECTIONS_ERROR);
 		}
 
-			createRoom(name);
+
+		createRoom(name);
 
 
 	} catch (error) {
+		console.log(error);
 		res.status(error.statusCode).json({
 			error: error.message,
 			reason: error.reason,
@@ -100,12 +97,6 @@ router.post("/room", async (req, res) => {
 		});
 	}
     
-
-
-/* 		res.status(CODE_INTERNAL_ERROR).json({
-			name : MESSAGE_ROOM_CREATION_ERROR,
-			reason: REASON_ROOM_CREATION_ERROR,
-		}) */
 	res.status(200).json({
 		name,
 		max_connections,

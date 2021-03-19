@@ -1,23 +1,27 @@
 const Docker = require("dockerode");
-const ROOM_IMAGE = "room:latest";
 const docker = new Docker({socketPath : process.env.DOCKER_SOCKET_PATH});
+
+const uuid = require("uuid");
 async function createRoom(name){
+    
+    const container_port = process.env.ROOM_PORT + "/tcp";
     try {
             const chat_room = await docker.createContainer({
                 HostConfig:{
                     PortBindings : {
                         "1337/tcp": [{
-                                "HostPort" : "1337"
+                                "HostPort" : process.env.ROOM_PORT
                         }]
                     }
                 },
-                Image: ROOM_IMAGE ,
-                name : `room${name}`
+                Image: process.env.ROOM_IMAGE,
+                name : `room_${name}`
         });
-        const instance = await chat_room.start({});
+
+        await chat_room.start({});
+
     } catch (error) {
-            console.log(error.status);
-            console.log(error.message);
+            console.log(error);
     }
 }
 module.exports={

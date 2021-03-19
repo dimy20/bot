@@ -1,4 +1,4 @@
-const {ROOM_NAME_MAX_CHARACTERS,ROOM_MAX_DURATION,ROOM_DEFAULT_EXPIRATION_VALUE} = require("../constants/constants");
+const {ROOM_NAME_MAX_CHARACTERS,ROOM_MAX_DURATION,ROOM_DEFAULT_EXPIRATION_VALUE,ROOM_MAX_CONNECTIONS_ALLOWED} = require("../constants/constants");
 
 const name_reg= new RegExp("[a-zA-Z0-9][a-zA-Z0-9_.-]");
 function validate_room_name(name){
@@ -22,9 +22,18 @@ function validate_expiration(exp) {
 	}
 	return false;
 }
+function validate_max_connections(max_connections){
+			let max_conn_placeholder = typeof max_connections === 'string' ? parseInt(max_connections) : max_connections;
+			if (
+				typeof max_conn_placeholder === "number" &&
+				max_conn_placeholder <= ROOM_MAX_CONNECTIONS_ALLOWED
+			) return true;
+            else return false; 
+}
 module.exports ={
     validate_room_name,
-    validate_expiration
+    validate_expiration,
+    validate_max_connections
 }
 
 
