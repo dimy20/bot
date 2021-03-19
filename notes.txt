@@ -46,7 +46,17 @@ Api Documentation:
             <room_id>, that is name,id,connections, data volume?,
                      date, time alive,expiration date
 
+/*
+    work on this
+
     GET api/v1/connect/<room_id>
+        params:
+            owner_id : room creator id, connection as the owner, allows for
+                        exclusive commands.
+
+    GET api/v1/connect/invite/<invite_key>
+
+*/
     POST api/v1/room creates new socket (chat) linked to command (2)
         Description:
             Launches a new room cotainer, which conatains the room

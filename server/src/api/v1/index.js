@@ -14,6 +14,7 @@ const {
 	ROOM_DEFAULT_EXPIRATION_VALUE,
 } = require("../internals/constants/constants");
 
+
 const {
 	ROOM_EXPIRATION_ERROR,
 	ROOM_NAME_ERROR,
@@ -23,22 +24,9 @@ const {
 
 const docker = new Docker({socketPath : '/var/run/docker.sock'});
 
+// this will change of course
 router.get("/",async (req,res)=>{
 
-
- const new_container = await docker.createContainer({
-	 HostConfig:{
-		 PortBindings : {
-			 "1337/tcp": [{
-					"HostPort" : "1337"
-			 }]
-		 }
-	 },
-	Image: "room:latest",
-	name : "room"
-});
-await new_container.start({
-});
 
 	res.json({
 		ho: "xd",
@@ -75,6 +63,8 @@ function validate_expiration(exp) {
     Invite users cant make use of this endpoint to connect with the room.
 
 */
+
+// to be implemented!
 router.get("/connect/:room_id",(req,res)=>{
 })
 /*	
@@ -125,11 +115,26 @@ router.post("/room", (req, res) => {
 		});
 		console.log(error);
 	}
+    
+
+    const new_container = await docker.createContainer({
+             HostConfig:{
+                 PortBindings : {
+                     "1337/tcp": [{
+                            "HostPort" : "1337"
+                     }]
+                 }
+             },
+            Image: "room:latest",
+            name : `room_${name}`
+    });
+    await new_container.start({});
 
 	res.status(200).json({
 		name,
 		max_connections,
 		expiration,
+        
 	});
 });
 
