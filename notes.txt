@@ -103,3 +103,15 @@ Research:
     [] cron jobs
     [] uxix sockets
     [] multi threading
+
+PROBLEMS:
+    Thougths:
+        I just realized that making a single WebSocket server for each client   
+        is totally retarded.
+            we only have 65k available ports on each machine - system reserved ports!
+            that would never work.
+            Tho we can have thousands of connections to a single websocket server,
+            each time a client makes a POST to "create a new room" we just reserve
+            a subset of connections within that webSocket server and we identify it
+            with some hashing.
+
