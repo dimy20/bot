@@ -4,9 +4,8 @@ const WebSocket = require("ws");
 
 
 const ws= new WebSocket.Server({ port: 1337});
-
 ws.on('connection', function connection(socket) {
-
+	socket.on("")
   socket.on('message', function incoming(message) {
     console.log('received: %s', message);
   });

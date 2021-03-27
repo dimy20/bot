@@ -1,0 +1,30 @@
+version: "3.4"
+services:
+    nginx:
+        image: nginx
+        container_name: nginx
+        ports:
+            - 80:80
+        volumes:
+            - type: bind
+              source: ./nginx.conf
+              target: /etc/nginx/nginx.conf        
+        depends_on:
+            - socket
+            - redis
+    socket:
+        container_name: socket 
+        build: .
+        volumes:
+           - ./:/app
+           - /app/node_modules
+        depends_on:
+            - redis
+    redis:
+        image: redis
+        container_name: redis
+        ports:
+            - 6379:6379
+         
+        
+        

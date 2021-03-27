@@ -115,3 +115,4 @@ PROBLEMS:
             a subset of connections within that webSocket server and we identify it
             with some hashing.
 
+        An in memory-database might be needed, redis?
