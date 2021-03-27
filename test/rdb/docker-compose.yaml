@@ -20,6 +20,18 @@ services:
            - /app/node_modules
         depends_on:
             - redis
+        environment:
+            APPID: 1111
+    socket2:
+        container_name: socket2
+        build: .
+        volumes:
+           - ./:/app
+           - /app/node_modules
+        depends_on:
+            - redis
+        environment:
+            APPID: 2222 
     redis:
         image: redis
         container_name: redis
