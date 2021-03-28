@@ -9,16 +9,9 @@ IDEAS:
     
 ----------------------------Architecture------------------------------
 
-    The architecture consits of a nginx server in the front proxying and
-    balancing requests on layer 7 (* as a starting strategy, more on this
-    at the end of this segment ) to a container server holding a rest api
-    with endpoints for managing and creating new chatting rooms.
-
+    nginx=
     world <=> Nginx <=> Rest api <=> rooms
 
-   * Since rooms are containers running a socket server, load balancing
-    on layer 7 could be problem, further research on this is necessary
-    and we should take into consideration load balancing on layer 4.
     
      ---------        ----------      -------
      | nginx |   <=>  |rest api|  <=> |rooms|

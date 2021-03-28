@@ -1,4 +1,5 @@
 const redis = require("redis");
+// keep connections to this node here
 const connections= [];
 const subscriber = redis.createClient({host : "redis", port : 6379});
 
@@ -7,7 +8,6 @@ const APPID = process.env.APPID;
 subscriber.on("error", function(error) {
   console.error(error);
 });
-
 subscriber.on("subscribe", function(channel,count){
       console.log(`Server ${APPID} subscribed successfully to livechat`)
 });
