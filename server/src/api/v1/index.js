@@ -4,7 +4,9 @@ const {createRoom} = require("../internals/Bootstrapping/container")
 const {validate_room_name,validate_expiration,validate_max_connections} = require("../internals/ErrorHandlers/validation");
 
  
- 
+/* 
+	Api version 1
+*/ 
 const {
 	ROOM_MAX_DURATION,
 	ROOM_DEFAULT_MAX_CONNECTIONS,
@@ -24,30 +26,19 @@ const {
 
 // this will change of course
 router.get("/",async (req,res)=>{
-	
 	res.json({
-		ho: xd,
-	});
+		message : "Callysto welcomes you!"
+	})
 })
-
+/*
+	Responds with webSocket credentials so clients can connect and extra data.	
+*/
 router.get("/:room_id", (req, res) => {
 	const id = req.params.room_id;
 	res.json({
 		id,
 	});
 });
-
-/*
-    This endpoint acts a proxy, tunneling tcp connections to an specific
-    existing room.
- 
-    forwards connection to rooom, allowing clients to connect with the
-    room they just created.
-    This makes some checks to see if room is still available, and some
-    authentication should be provided to indentify thw owner.
-    Invite users cant make use of this endpoint to connect with the room.
-
-*/
 
 // to be implemented!
 router.get("/connect/:room_id",(req,res)=>{});
@@ -100,7 +91,7 @@ router.post("/room", async (req, res) => {
 			default: error.default,
 		});
 	}
-    
+
 	res.status(200).json({
 		name,
 		max_connections,

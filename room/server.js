@@ -1,7 +1,4 @@
-const net = require("net");
-const http = require("http");
 const WebSocket = require("ws");
-
 
 const ws= new WebSocket.Server({ port: 1337});
 ws.on('connection', function connection(socket) {
