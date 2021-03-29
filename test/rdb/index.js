@@ -31,8 +31,9 @@ websocket.on("request",async (request)=>{
       console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
       return;
       }
-
+      console.log(request.remoteAddresses);
       const conn = request.accept(null,request.origin);
+      
       publisher.set(["hello","world","NX","EX",20],(err,res)=>{
           if(res === null) console.log("you are already connected");
           else console.log(res);

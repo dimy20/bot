@@ -39,17 +39,7 @@ Api Documentation:
             <room_id>, that is name,id,connections, data volume?,
                      date, time alive,expiration date
 
-/*
-    work on this
 
-    GET api/v1/connect/<room_id>
-        params:
-            owner_id : room creator id, connection as the owner, allows for
-                        exclusive commands.
-
-    GET api/v1/connect/invite/<invite_key>
-
-*/
     POST api/v1/room creates new socket (chat) linked to command (2)
         Description:
             Launches a new room cotainer, which conatains the room
@@ -87,7 +77,6 @@ Api Documentation:
 -----------------------------END CLI TOOL------------------------------
 
 ---------------------------------DEV-----------------------------------
-    POST api/v1/room launches new room container
      
 --------------------------------END DEV--------------------------------
 
@@ -109,3 +98,38 @@ PROBLEMS:
             with some hashing.
 
         An in memory-database might be needed, redis?
+        
+    Users can chat with one another and create chat groups, both features are short-lived,
+    and only accesible with a certain key, and password if the creator wants it.
+
+    ROOMS :
+
+    POST api/v1/room => Endpoint will recerve an N amount of spots for each user.
+        user must be able to connect from multiple clients!
+        so, suppose there are 18 connected users on room A, and user number 2, decides to 
+        open 3 extra chrome tabs and connect to the room from each one of them, now, should
+        this three new connections count as new connections to the room? short answer, NO.
+        Users stablishing new connections from different clients whilist being already connected
+        to the server is a pretty common scenario.
+        Internally the server should interpret this extra connections as a single user being connected,
+        and handle iddle connections, possibly terminating them for resource optimizations,
+        this wont cause any loss of user experience, after all the user can always connect again,
+        nevertheless this should be handle accordingly.
+
+        Rooms will be identified with a uuid, atatched to that uuid, there will be some structure
+        containing the remaining information for that room. 
+        
+        HOW TO ID USERS?
+            Since the main objective is that everything is as fast as possible, what do i mean
+            by this?.
+            you can get a link, a that should be it, you should be able to share that link around
+            and start chatting.
+            So an actual signing up should by no means be required to use the app, even thougt it should
+            be available, maybe for some user-reserved features?
+            Signing up takes time, a that is the oppsite of what the main goal of the app is trying to
+            achieve.
+            So, if the user is not signed up, a different mechanisim for identifying users will be needed.
+            we could try to id its remoteAdress, or maybe send some token, identifying signed users 
+            should not be a problem at all, since we can use that users information..
+            
+    
