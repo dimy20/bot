@@ -1,14 +1,5 @@
 version: "3.8"
 services:
-    api_server:
-        build: ../api_server/src
-        container_name: api_server 
-        volumes:
-            - ../api_server/src/:/app
-            - /app/node_modules
-            #- /var/run/docker.sock:/var/run/docker.sock
-        env_file:
-            - ../api_server/env/api_server.env
     nginx:
         container_name: nginx
         image: nginx
@@ -20,4 +11,38 @@ services:
               target: /etc/nginx/nginx.conf
         depends_on:
             - api_server 
-                 
+    # Rest api
+    api_server:
+        build: ../api_server/src
+        container_name: api_server 
+        volumes:
+            - ../api_server/src/:/app
+            - /app/node_modules
+            #- /var/run/docker.sock:/var/run/docker.sock
+        env_file:
+            - ../api_server/env/api_server.env
+    redis:
+        image: redis
+        container_name: redis
+        ports:
+            - 6379:6379
+    websocket_s:
+        container_name: websocket_s
+        build: ../websocket_s
+        volumes:
+           - ../websocket_s:/app
+           - /app/node_modules
+        depends_on:
+            - redis
+        environment:
+            APPID: 1111
+    websocket_s1:
+        container_name: websocket_s1
+        build: ../websocket_s
+        volumes:
+           - ../websocket_s:/app
+           - /app/node_modules
+        depends_on:
+            - redis
+        environment:
+            APPID: 2222 
