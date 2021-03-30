@@ -13,7 +13,6 @@ ws.on('connection', function connection(socket) {
 
 
 
-
 function isConnected(connections, new_socket) {
 	if (typeof new_socket === "object" && new_socket.id != "undefined") {
 		if (connections.length === 0) return false;
