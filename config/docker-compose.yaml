@@ -34,6 +34,8 @@ services:
            - /app/node_modules
         depends_on:
             - redis
+        env_file:
+            - ../websocket_s/env/websocket_s.env
         environment:
             APPID: 1111
     websocket_s1:
@@ -44,5 +46,7 @@ services:
            - /app/node_modules
         depends_on:
             - redis
+        env_file:
+            - ../websocket_s/env/websocket_s.env
         environment:
             APPID: 2222 

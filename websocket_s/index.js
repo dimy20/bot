@@ -4,12 +4,21 @@ const redis = require("redis");
 const {connections}= require("./subscriber");
 const APPID = process.env.APPID;
 const httpServer= http.createServer();
+class Clients {
+  constructor(){
+    this.clientsList ={};
+    this.saveClient = this.saveClient.bind(this);
+  }
+  saveClient(id,client){
+      this.saveClient[id] = client;
+  }
+}
 
 function originIsAllowed(origin) {
   // put logic here to detect whether the specified origin is allowed.
   return true;
 }
-const publisher = redis.createClient({host : "redis", port : 6379});
+const publisher = redis.createClient({host : "redis", port : process.env.REDIS_PORT});
 
 publisher.on("error", function(error) {
   console.error(error);
@@ -51,6 +60,6 @@ websocket.on("request",async (request)=>{
 
 
 
-httpServer.listen(1337,()=>{
+httpServer.listen(process.env.PORT,()=>{
   console.log(`Server now listening on port 80`);
 })

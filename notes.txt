@@ -85,6 +85,8 @@ Research:
     [] cron jobs
     [] uxix sockets
     [] multi threading
+    [] The max amount of stablished websocet connections a server can handle are    
+        related to the number of file descriptors availabe on the host machine
 
 PROBLEMS:
     Thougths:
@@ -103,33 +105,55 @@ PROBLEMS:
     and only accesible with a certain key, and password if the creator wants it.
 
     ROOMS :
+        id : <string> uuid
+        host: <String>
+        name : <string>
+        url : <string> http://hostname/roomid
+        pwd : <string>
+        expires: <number> hrs - example : 24hs
+        availabe: <string> : indicates when room should be availabe for users to join 
+
 
     POST api/v1/room => Endpoint will recerve an N amount of spots for each user.
         user must be able to connect from multiple clients!
         so, suppose there are 18 connected users on room A, and user number 2, decides to 
         open 3 extra chrome tabs and connect to the room from each one of them, now, should
         this three new connections count as new connections to the room? short answer, NO.
-        Users stablishing new connections from different clients whilist being already connected
+        Users stablishing new connections from different clients whule still being already connected
         to the server is a pretty common scenario.
         Internally the server should interpret this extra connections as a single user being connected,
         and handle iddle connections, possibly terminating them for resource optimizations,
         this wont cause any loss of user experience, after all the user can always connect again,
         nevertheless this should be handle accordingly.
 
+        Stores room information on database.
+
+        rooms will remain alive until host decide to delete it or AliveFor expires.
         Rooms will be identified with a uuid, atatched to that uuid, there will be some structure
         containing the remaining information for that room. 
         
+    UPDATE api/v1/room/keepAlive :
+        if sent before room expires string, expires value will be incremented to keep alive the room.
+    DELETE api/v1/room
+        Deletes room.
+        Removes all its data from database.
+    
         HOW TO ID USERS?
+            Only room hosts should signed in.
             Since the main objective is that everything is as fast as possible, what do i mean
             by this?.
             you can get a link, a that should be it, you should be able to share that link around
             and start chatting.
             So an actual signing up should by no means be required to use the app, even thougt it should
             be available, maybe for some user-reserved features?
-            Signing up takes time, a that is the oppsite of what the main goal of the app is trying to
+            Signing up takes time, and that is the oppsite of what the main goal of the app is trying to
             achieve.
             So, if the user is not signed up, a different mechanisim for identifying users will be needed.
             we could try to id its remoteAdress, or maybe send some token, identifying signed users 
             should not be a problem at all, since we can use that users information..
-            
+
+    WebSocket server resources concerns:
+        
+
+
     
