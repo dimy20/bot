@@ -29,8 +29,11 @@ services:
     room_service:
         container_name: room_service
         build: ../room_service
+        env_file:
+            - ./db.env
         volumes:
         - /app/node_modules
+
     websocket_s:
         container_name: websocket_s
         build: ../websocket_s

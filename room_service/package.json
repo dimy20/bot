@@ -4,12 +4,13 @@
   "description": "",
   "main": "room_service.js",
   "scripts": {
-    "start":"nodemon room_service.js"
+    "start": "nodemon room_service.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "mongoose": "^5.12.3",
     "node-ipc": "^9.1.4"
   },
   "devDependencies": {
