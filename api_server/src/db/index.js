@@ -9,7 +9,7 @@ const config = {
     useUnifiedTopology: true
 }
 /**
- * inits database 
+ * inits mongoose database 
 */
 async function init_db(user,pass,db){
 const uri = `mongodb+srv://${user}:${pass}@cluster0.wb3ci.mongodb.net/${db}?retryWrites=true&w=majority`;

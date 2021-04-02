@@ -2,7 +2,7 @@ const router = require("express").Router();
 const { makeError } = require("../internals/ErrorHandlers/errorHandler");
 const {createRoom} = require("../internals/Bootstrapping/container")
 const {validate_room_name,validate_expiration,validate_max_connections} = require("../internals/ErrorHandlers/validation");
-
+const room = require("../../db/models/room");
  
 /* 
 	Api version 1
@@ -91,6 +91,7 @@ router.post("/room", async (req, res) => {
 			default: error.default,
 		});
 	}
+	
 
 	res.status(200).json({
 		name,
