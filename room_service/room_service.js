@@ -1,3 +1,4 @@
+// runs db_init(user,pass,db);
 require("./db/index");
 const net = require("net");
 const server = net.createServer({});

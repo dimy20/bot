@@ -1,5 +1,4 @@
-// runs db_init(user,pass,db);
-//require("./db/index");
+
 const http = require("http");
 const app = require("./api/gateway");
 const server = http.createServer(app);
