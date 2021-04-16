@@ -1,11 +1,13 @@
 const ws = require("websocket");
 const http = require("http");
 const redis = require("redis");
-const {clients}= require("./subscriber");
+const {clients,connections}= require("./subscriber");
 const APPID = process.env.APPID;
 const httpServer= http.createServer();
 const uuid = require("uuid");
-
+let test = {"1" : 1,
+        "2" : 2};
+let arr =[];
 const {pub} = require("./publisher");
 
 function originIsAllowed(origin) {
@@ -39,7 +41,15 @@ websocket.on("request",async (request)=>{
       */
       const conn = request.accept(null,request.origin);
       const conn_id = uuid.v1().split("-")[0];
+      clients.saveClient(conn_id,conn);
+/*       console.log("test: " +  Object.entries(test).length);
+      console.log(test);
+      Object.assign(test, {[conn_id]: "value3"});
+      console.log("test: " +  Object.entries(test).length);
+      console.log(test); */
       console.log("new user connected! ", conn_id);
+            console.log(clients.clients_size());
+
       conn.on("open", ()=>{
         console.log("!Welcome")
       })
@@ -53,11 +63,12 @@ websocket.on("request",async (request)=>{
               conn_id : conn_id
           });
           pub.publishData(message_data);
-/*           publisher.publish("livechat",message_data); */
       })
 
+          connections.push(conn_id);
+          console.log("clients : ", connections.length);
 
-      clients.saveClient(conn_id,conn);
+
       
 });
 

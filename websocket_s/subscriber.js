@@ -1,7 +1,6 @@
 const redis = require("redis");
 // keep connections to this node here
-//const connections= [];
-
+const connections= [];
 const subscriber = redis.createClient({host : "redis", port : process.env.REDIS_PORT});
 
 const APPID = process.env.APPID;
@@ -14,6 +13,9 @@ class Clients {
   saveClient(id,client){
       this.clientsList[id] = client;
   }
+  clients_size(){
+    return Object.entries(this.clientsList).length;
+  }
 }
 const clients = new Clients();
 
@@ -25,11 +27,17 @@ subscriber.on("subscribe", function(channel,count){
 });
 subscriber.on("message",(channel,data)=>{
         const parsed_data = JSON.parse(data);
-        console.log(clients.clientsList);
         try {
-            const conn = clients.clientsList[parsed_data.conn_id];
-            console.log(`Server ${APPID} received message in channel ${channel} msg: ${parsed_data.msg}`);
-            conn.send(APPID + ":" + parsed_data.msg);
+            // check if there actually are stablished connections, 
+            // STUDY WHY THIS IS ZERO FOR A SHORT PERIOD
+            
+            if(Object.entries(clients.clientsList).length > 0 ){
+
+                const conn = clients.clientsList[parsed_data.conn_id];
+                console.log(`Server ${APPID} received message in channel ${channel} msg: ${parsed_data.msg}`);
+                conn.send(APPID + ":" + parsed_data.msg);
+            } 
+
         } catch (ex) {
             console.error(ex);
           
@@ -38,5 +46,6 @@ subscriber.on("message",(channel,data)=>{
 subscriber.subscribe("livechat");
 
 module.exports ={
-  clients 
+  clients,
+  connections
 }
