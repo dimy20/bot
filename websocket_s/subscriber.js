@@ -1,7 +1,8 @@
 const redis = require("redis");
 // keep connections to this node here
 //const connections= [];
-const subscriber = redis.createClient({host : "redis", port : 6379});
+
+const subscriber = redis.createClient({host : "redis", port : process.env.REDIS_PORT});
 
 const APPID = process.env.APPID;
 
@@ -23,17 +24,12 @@ subscriber.on("subscribe", function(channel,count){
       console.log(`Server ${APPID} subscribed successfully to livechat`)
 });
 subscriber.on("message",(channel,data)=>{
-        console.log(clients.clientsList);
         const parsed_data = JSON.parse(data);
+        console.log(clients.clientsList);
         try {
             const conn = clients.clientsList[parsed_data.conn_id];
-            console.log
-            console.log(`Server ${APPID} received message in channel ${channel} msg: ${conn.msg}`);
+            console.log(`Server ${APPID} received message in channel ${channel} msg: ${parsed_data.msg}`);
             conn.send(APPID + ":" + parsed_data.msg);
-            
-/*             for(let socket of clients.clientsList){
-                socket.send(APPID + ":" + message);
-            } */
         } catch (ex) {
             console.error(ex);
           
