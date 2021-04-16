@@ -1,18 +1,11 @@
 const ws = require("websocket");
 const http = require("http");
 const redis = require("redis");
-const {connections}= require("./subscriber");
+const {clients}= require("./subscriber");
 const APPID = process.env.APPID;
 const httpServer= http.createServer();
-class Clients {
-  constructor(){
-    this.clientsList ={};
-    this.saveClient = this.saveClient.bind(this);
-  }
-  saveClient(id,client){
-      this.saveClient[id] = client;
-  }
-}
+const uuid = require("uuid");
+
 
 function originIsAllowed(origin) {
   // put logic here to detect whether the specified origin is allowed.
@@ -41,7 +34,8 @@ websocket.on("request",async (request)=>{
       return;
       }
       const conn = request.accept(null,request.origin);
-
+      const conn_id = uuid.v1().split("-")[0];
+      console.log("new user connected! ", conn_id);
       conn.on("open", ()=>{
         console.log("!Welcome")
       })
@@ -50,11 +44,17 @@ websocket.on("request",async (request)=>{
           //publish the message to redis
 
           console.log(`${APPID} Received message ${message.utf8Data}`)
-          publisher.publish("livechat", message.utf8Data)
+          const message_data = JSON.stringify({
+              msg : message.utf8Data,
+              conn_id : conn_id
+          });
+          publisher.publish("livechat",message_data);
       })
 
       setTimeout(() => conn.send(`Connected successfully to server ${APPID}`), 5000)
-      connections.push(conn);
+
+      clients.saveClient(conn_id,conn);
+      
 });
 
 

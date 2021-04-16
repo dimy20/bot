@@ -134,6 +134,7 @@ PROBLEMS:
         
     UPDATE api/v1/room/keepAlive :
         if sent before room expires string, expires value will be incremented to keep alive the room.
+
     DELETE api/v1/room
         Deletes room.
         Removes all its data from database.
