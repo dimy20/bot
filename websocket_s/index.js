@@ -1,7 +1,6 @@
 const ws = require("websocket");
 const http = require("http");
-const redis = require("redis");
-const {clients,connections}= require("./subscriber");
+const {clients}= require("./subscriber");
 const APPID = process.env.APPID;
 const httpServer= http.createServer();
 const uuid = require("uuid");
@@ -11,11 +10,6 @@ function originIsAllowed(origin) {
   // put logic here to detect whether the specified origin is allowed.
   return true;
 }
-/* const publisher = redis.createClient({host : "redis", port : process.env.REDIS_PORT});
-
-publisher.on("error", function(error) {
-  console.error(error);
-}); */
 
 
 const websocket = new ws.server({
@@ -26,8 +20,6 @@ const websocket = new ws.server({
   keepaliveGracePeriod: 10000
 })
 
-    let test = [];
-    const add = (conn)=>test.push(conn);
 websocket.on("request",async (request)=>{
       console.log("new request!");
       if(!originIsAllowed(request.origin)){
@@ -40,15 +32,10 @@ websocket.on("request",async (request)=>{
       */
 
       const conn = request.accept(null,request.origin);
-      
-      add("xd");
       console.log("logs comming from :", APPID);
-      console.log(test);
-      console.log(test.length);
-
       const conn_id = uuid.v1().split("-")[0];
       clients.saveClient(conn_id,conn);
-
+      console.log(clients.size());
 
       conn.on("open", ()=>{
 

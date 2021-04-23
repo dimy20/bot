@@ -1,6 +1,5 @@
 const redis = require("redis");
 // keep connections to this node here
-const connections= [];
 const subscriber = redis.createClient({host : "redis", port : process.env.REDIS_PORT});
 
 const APPID = process.env.APPID;
@@ -13,7 +12,7 @@ class Clients {
   saveClient(id,client){
       this.clientsList[id] = client;
   }
-  clients_size(){
+  size(){
     return Object.entries(this.clientsList).length;
   }
 }
@@ -48,5 +47,4 @@ subscriber.subscribe("livechat");
 
 module.exports ={
   clients,
-  connections
 }
