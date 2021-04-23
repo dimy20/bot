@@ -3,20 +3,38 @@ const redis = require("redis");
 const subscriber = redis.createClient({host : "redis", port : process.env.REDIS_PORT});
 
 const APPID = process.env.APPID;
-
-class Clients {
-  constructor(){
-    this.clientsList ={};
-    this.saveClient = this.saveClient.bind(this);
+/* class Room{
+  constructor(id){
+    this.id = id;
+    this.clients = {} 
   }
-  saveClient(id,client){
-      this.clientsList[id] = client;
+} */
+class Rooms{
+  constructor(){
+    this.roomsList={};
+    this.saveRoom= this.saveRoom.bind(this);
+  }
+  saveRoom(id){
+      this.roomsList[id] = {
+        id : id,
+        clients : []
+      }
+  }
+  addClientToRoom(room_id,client_id,websocketConnection){
+    if(this.size() > 0){
+/*       this.roomsList[room_id].clients[client_id] = websocketConnection; */
+        this.roomsList[room_id].clients.push(websocketConnection);
+    }
+   return 0; 
+  }
+  getClientsFromRoom(roomid){
+    return this.roomsList[roomid].clients;
   }
   size(){
-    return Object.entries(this.clientsList).length;
+    return Object.entries(this.roomsList).length;
   }
 }
-const clients = new Clients();
+const rooms= new Rooms();
 
 subscriber.on("error", function(error) {
   console.error(error);
@@ -25,17 +43,23 @@ subscriber.on("subscribe", function(channel,count){
       console.log(`Server ${APPID} subscribed successfully to livechat`)
 });
 subscriber.on("message",(channel,data)=>{
-        console.log(connections.length);
+        console.log("subscriber on : ", APPID);
+
         const parsed_data = JSON.parse(data);
         try {
             // check if there actually are stablished connections, 
             // STUDY WHY THIS IS ZERO FOR A SHORT PERIOD
-            
-            if(Object.entries(clients.clientsList).length > 0 ){
 
-                const conn = clients.clientsList[parsed_data.conn_id];
+            const room = rooms.roomsList[parsed_data.room_id];
+
+            if(Object.entries(room.clients).length > 0 ){
+
+             //   const conn = rooms.roomsList[parsed_data.conn_id];
+                for(conn of room.clients){
+                  conn.send(APPID + "user : " + parsed_data.user_id + ":" + parsed_data.msg);
+                }
                 console.log(`Server ${APPID} received message in channel ${channel} msg: ${parsed_data.msg}`);
-                conn.send(APPID + ":" + parsed_data.msg);
+
             } 
 
         } catch (ex) {
@@ -46,5 +70,5 @@ subscriber.on("message",(channel,data)=>{
 subscriber.subscribe("livechat");
 
 module.exports ={
-  clients,
+  rooms,
 }

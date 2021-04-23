@@ -1,6 +1,6 @@
 const ws = require("websocket");
 const http = require("http");
-const {clients}= require("./subscriber");
+const {rooms}= require("./subscriber");
 const APPID = process.env.APPID;
 const httpServer= http.createServer();
 const uuid = require("uuid");
@@ -10,7 +10,11 @@ function originIsAllowed(origin) {
   // put logic here to detect whether the specified origin is allowed.
   return true;
 }
-
+function logger(){
+      console.log("logs comming from :", APPID);
+      console.log(rooms.size());
+      console.log(rooms.roomsList);
+}
 
 const websocket = new ws.server({
   httpServer : httpServer,
@@ -19,7 +23,10 @@ const websocket = new ws.server({
   dropConnectionOnKeepaliveTimeout:true,
   keepaliveGracePeriod: 10000
 })
-
+function fakeRoom(){
+      rooms.saveRoom("room");
+}
+fakeRoom();
 websocket.on("request",async (request)=>{
       console.log("new request!");
       if(!originIsAllowed(request.origin)){
@@ -27,36 +34,27 @@ websocket.on("request",async (request)=>{
         console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
         return;
         }
+        
       /*
         When a new connections is accepted a new file descriptor is associated with this new socket connection
       */
 
       const conn = request.accept(null,request.origin);
-      console.log("logs comming from :", APPID);
       const conn_id = uuid.v1().split("-")[0];
-      clients.saveClient(conn_id,conn);
-      console.log(clients.size());
-
-      conn.on("open", ()=>{
-
-        console.log("!Welcome")
-      })
-      conn.on("close", () => console.log("CLOSED!!!"))
+      rooms.addClientToRoom("room",conn_id,conn);
+      logger();
+      conn.on("open", ()=>{console.log("!Welcome")});
+      conn.on("close", () => console.log("connection closed"))
       conn.on("message", message => {
           //publish the message to redis
-
           console.log(`${APPID} Received message ${message.utf8Data}`)
           const message_data = JSON.stringify({
               msg : message.utf8Data,
-              conn_id : conn_id
+              room_id:"room",
+              user_id : conn_id
           });
           pub.publishData(message_data);
       })
-
-
-
-
-      
 });
 
 

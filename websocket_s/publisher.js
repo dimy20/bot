@@ -8,6 +8,7 @@ class Publisher{
         this.publishData = this.publishData.bind(this);
     }
     publishData(data){
+        //validate the data
         this.publisher.publish(CHAT_CHANNEL,data)
     }
 }
