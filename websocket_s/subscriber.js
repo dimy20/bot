@@ -26,6 +26,7 @@ subscriber.on("subscribe", function(channel,count){
       console.log(`Server ${APPID} subscribed successfully to livechat`)
 });
 subscriber.on("message",(channel,data)=>{
+        console.log(connections.length);
         const parsed_data = JSON.parse(data);
         try {
             // check if there actually are stablished connections, 
