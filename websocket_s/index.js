@@ -25,12 +25,12 @@ const websocket = new ws.server({
 function fakeRoom(name){
       rooms.saveRoom(name);
 }
+//inits fake rooms for testing
 fakeRoom("room");
 fakeRoom("room2");
 websocket.on("request",async (request)=>{
-      console.log("new request!");
       const room_name = request.httpRequest.url.split("/")[2];
-      console.log(room_name);
+      console.log("new request to connec to ", room_name);
       if(!originIsAllowed(request.origin)){
         request.reject();
         console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
