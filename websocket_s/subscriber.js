@@ -3,12 +3,6 @@ const redis = require("redis");
 const subscriber = redis.createClient({host : "redis", port : process.env.REDIS_PORT});
 
 const APPID = process.env.APPID;
-/* class Room{
-  constructor(id){
-    this.id = id;
-    this.clients = {} 
-  }
-} */
 class Rooms{
   constructor(){
     this.roomsList={};
@@ -21,11 +15,19 @@ class Rooms{
       }
   }
   addClientToRoom(room_id,client_id,websocketConnection){
-    if(this.size() > 0){
+    console.log(this.isRoomValid(room_id));
+    if(this.size() > 0 && this.isRoomValid(room_id)){
 /*       this.roomsList[room_id].clients[client_id] = websocketConnection; */
-        this.roomsList[room_id].clients.push(websocketConnection);
+        this.roomsList[room_id].clients.push({
+          websocketConnection,
+          client_id
+        });
     }
    return 0; 
+  }
+  /*Validates if room exists*/
+  isRoomValid(room_name){
+    return typeof this.roomsList[room_name] !== 'undefined'
   }
   getClientsFromRoom(roomid){
     return this.roomsList[roomid].clients;
@@ -44,24 +46,23 @@ subscriber.on("subscribe", function(channel,count){
 });
 subscriber.on("message",(channel,data)=>{
         console.log("subscriber on : ", APPID);
-
         const parsed_data = JSON.parse(data);
         try {
             // check if there actually are stablished connections, 
             // STUDY WHY THIS IS ZERO FOR A SHORT PERIOD
-
+            if(!rooms.isRoomValid(parsed_data.room_id)) throw new Error("Invalid room name");
             const room = rooms.roomsList[parsed_data.room_id];
-
+            
             if(Object.entries(room.clients).length > 0 ){
 
-             //   const conn = rooms.roomsList[parsed_data.conn_id];
+            //   const conn = rooms.roomsList[parsed_data.conn_id];
                 for(conn of room.clients){
-                  conn.send(APPID + "user : " + parsed_data.user_id + ":" + parsed_data.msg);
+                  conn.websocketConnection.send(APPID + "user : " + parsed_data.user_id + ":" + parsed_data.msg);
                 }
                 console.log(`Server ${APPID} received message in channel ${channel} msg: ${parsed_data.msg}`);
 
             } 
-
+            
         } catch (ex) {
             console.error(ex);
           

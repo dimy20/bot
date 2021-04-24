@@ -15,7 +15,6 @@ function logger(){
       console.log(rooms.size());
       console.log(rooms.roomsList);
 }
-
 const websocket = new ws.server({
   httpServer : httpServer,
   keepalive: true,
@@ -23,25 +22,28 @@ const websocket = new ws.server({
   dropConnectionOnKeepaliveTimeout:true,
   keepaliveGracePeriod: 10000
 })
-function fakeRoom(){
-      rooms.saveRoom("room");
+function fakeRoom(name){
+      rooms.saveRoom(name);
 }
-fakeRoom();
+fakeRoom("room");
+fakeRoom("room2");
 websocket.on("request",async (request)=>{
       console.log("new request!");
+      const room_name = request.httpRequest.url.split("/")[2];
+      console.log(room_name);
       if(!originIsAllowed(request.origin)){
         request.reject();
         console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
         return;
         }
-        
+
       /*
         When a new connections is accepted a new file descriptor is associated with this new socket connection
       */
 
       const conn = request.accept(null,request.origin);
       const conn_id = uuid.v1().split("-")[0];
-      rooms.addClientToRoom("room",conn_id,conn);
+      rooms.addClientToRoom(room_name,conn_id,conn);
       logger();
       conn.on("open", ()=>{console.log("!Welcome")});
       conn.on("close", () => console.log("connection closed"))
@@ -50,7 +52,7 @@ websocket.on("request",async (request)=>{
           console.log(`${APPID} Received message ${message.utf8Data}`)
           const message_data = JSON.stringify({
               msg : message.utf8Data,
-              room_id:"room",
+              room_id:room_name,
               user_id : conn_id
           });
           pub.publishData(message_data);
