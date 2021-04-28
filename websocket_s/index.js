@@ -29,8 +29,7 @@ function fakeRoom(name){
 fakeRoom("room");
 fakeRoom("room2");
 websocket.on("request",async (request)=>{
-      const room_name = request.httpRequest.url.split("/")[2];
-      console.log("new request to connec to ", room_name);
+
       if(!originIsAllowed(request.origin)){
         request.reject();
         console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
@@ -40,13 +39,20 @@ websocket.on("request",async (request)=>{
       /*
         When a new connections is accepted a new file descriptor is associated with this new socket connection
       */
+      const room_name = request.httpRequest.url.split("/")[2];
+      console.log("new request to connec to ", room_name);
 
       const conn = request.accept(null,request.origin);
       const conn_id = uuid.v1().split("-")[0];
       rooms.addClientToRoom(room_name,conn_id,conn);
       logger();
       conn.on("open", ()=>{console.log("!Welcome")});
-      conn.on("close", () => console.log("connection closed"))
+      conn.on("close", () => {console.log("connection closed")
+        const r = rooms.roomsList["room2"];
+        r.removeClient(r.clients[0].id);
+        console.log(r.clients);
+        //console.log(r);
+    })
       conn.on("message", message => {
           //publish the message to redis
           console.log(`${APPID} Received message ${message.utf8Data}`)

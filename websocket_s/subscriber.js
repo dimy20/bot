@@ -1,8 +1,8 @@
 const redis = require("redis");
-const {Rooms} = require("./internals/internals");
+const {RoomList} = require("./internals/internals");
 const subscriber = redis.createClient({host : "redis", port : process.env.REDIS_PORT});
 const APPID = process.env.APPID;
-const rooms = new Rooms();
+const rooms = new RoomList(); 
 
 subscriber.on("error", function(error) {
   console.error(error);
@@ -21,9 +21,10 @@ subscriber.on("message",(channel,data)=>{
             const room = rooms.roomsList[parsed_data.room_id];
 
             if(Object.entries(room.clients).length > 0 ){
-
+              
             //   const conn = rooms.roomsList[parsed_data.conn_id];
                 for(conn of room.clients){
+              console.log(conn.websocketConnection);
                   conn.websocketConnection.send(APPID + "user : " + parsed_data.user_id + ":" + parsed_data.msg);
                 }
                 console.log(`Server ${APPID} received message in channel ${channel} msg: ${parsed_data.msg}`);
