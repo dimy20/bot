@@ -1,3 +1,4 @@
+const net = require("net");
 const ws = require("websocket");
 const http = require("http");
 const {rooms}= require("./subscriber");
@@ -7,6 +8,7 @@ const uuid = require("uuid");
 const {pub} = require("./publisher");
 
 function originIsAllowed(origin) {
+  //maybe check here if room exists.
   // put logic here to detect whether the specified origin is allowed.
   return true;
 }
@@ -28,6 +30,19 @@ function fakeRoom(name){
 //inits fake rooms for testing
 fakeRoom("room");
 fakeRoom("room2");
+
+  const socket = net.connect({
+    port : 5000,
+    host : "room_service"
+  })
+  socket.on("connect",()=>{
+
+      socket.write(JSON.stringify({test:"test"}));
+  })
+  socket.on("error",(error)=>{
+    console.log(error)
+  })
+  
 websocket.on("request",async (request)=>{
 
       if(!originIsAllowed(request.origin)){

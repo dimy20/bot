@@ -1,7 +1,0 @@
-version: "3.8"
-services:
-  room_service:
-    container_name: room_service
-    build: .
-    volumes:
-      - /app/node_modules

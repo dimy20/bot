@@ -3,6 +3,7 @@ require("./db/index");
 const net = require("net");
 const server = net.createServer({});
 const {room_model} = require("./db/room_model");
+
 server.on("connection",(socket)=>{
     socket.on("data",(chunk)=>{
         const room_data = JSON.parse(Buffer.from(chunk).toString());
