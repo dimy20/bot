@@ -1,8 +1,9 @@
 //Stateful websocket connection
 class Client{
-  constructor(id,websocketConnection){
-    this.id = id;
+  constructor(id,roomName,websocketConnection){
     this.websocketConnection = websocketConnection;
+    this.websocketConnection.id = id;
+    this.websocketConnection.roomName= roomName;
   }
 }
 class Room{
@@ -10,15 +11,17 @@ class Room{
     this.id = id;
     this.clients = [];
   }
-  addClient(client_id,websocketConnection){
-      this.clients.push(new Client(client_id,websocketConnection));
+  // pushes a new client object to the room
+  addClient(client_id,roomName,websocketConnection){
+      this.clients.push(new Client(client_id,roomName,websocketConnection));
   }
   removeClient(client_id){
     if(typeof client_id === "string"){
         for (let i =0; i<this.clients.length;i++){
           let client = this.clients[i];
-          if(client.id === client_id  && client.websocketConnection.state === "closed") {
+          if(client.websocketConnection.id === client_id  && client.websocketConnection.state === "closed") {
                 this.clients.splice(i,1);
+                console.log(`user ${client.websocketConnection.id} left, ${this.clients.length} users online on ${client.websocketConnection.roomName}`);
          }
         }
     }else{
@@ -35,9 +38,9 @@ class RoomList{
   saveRoom(id){
       this.roomsList[id] = new Room(id);
   }
-  addClientToRoom(room_id,client_id,websocketConnection){
-    if(this.size() > 0 && this.isRoomValid(room_id)){
-        this.roomsList[room_id].addClient(client_id,websocketConnection);
+  addClientToRoom(roomName,client_id,websocketConnection){
+    if(this.size() > 0 && this.isRoomValid(roomName)){
+        this.roomsList[roomName].addClient(client_id,roomName,websocketConnection);
     }
    return 0; 
   }

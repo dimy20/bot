@@ -47,11 +47,11 @@ websocket.on("request",async (request)=>{
       rooms.addClientToRoom(room_name,conn_id,conn);
       logger();
       conn.on("open", ()=>{console.log("!Welcome")});
-      conn.on("close", () => {console.log("connection closed")
-        const r = rooms.roomsList["room2"];
-        r.removeClient(r.clients[0].id);
-        console.log(r.clients);
-        //console.log(r);
+      conn.on("close", (t) => {console.log("connection closed")
+      console.log(conn.id);
+      console.log(conn.roomName);
+        const r = rooms.roomsList[conn.roomName];
+        r.removeClient(conn.id);
     })
       conn.on("message", message => {
           //publish the message to redis
