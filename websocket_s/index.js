@@ -47,9 +47,7 @@ websocket.on("request",async (request)=>{
       rooms.addClientToRoom(room_name,conn_id,conn);
       logger();
       conn.on("open", ()=>{console.log("!Welcome")});
-      conn.on("close", (t) => {console.log("connection closed")
-      console.log(conn.id);
-      console.log(conn.roomName);
+      conn.on("close", () => {console.log("connection closed")
         const r = rooms.roomsList[conn.roomName];
         r.removeClient(conn.id);
     })

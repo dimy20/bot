@@ -22,6 +22,8 @@ class Room{
           if(client.websocketConnection.id === client_id  && client.websocketConnection.state === "closed") {
                 this.clients.splice(i,1);
                 console.log(`user ${client.websocketConnection.id} left, ${this.clients.length} users online on ${client.websocketConnection.roomName}`);
+         }else{
+           throw new Error(`client ${client_id} is not connected to the room`);
          }
         }
     }else{
@@ -41,15 +43,14 @@ class RoomList{
   addClientToRoom(roomName,client_id,websocketConnection){
     if(this.size() > 0 && this.isRoomValid(roomName)){
         this.roomsList[roomName].addClient(client_id,roomName,websocketConnection);
+    }else{
+      throw new Error(`${roomName} doesnt exist or there are no rooms available`);
     }
    return 0; 
   }
   /*Validates if room exists*/
   isRoomValid(room_name){
     return typeof this.roomsList[room_name] !== 'undefined'
-  }
-  getClientsFromRoom(roomid){
-    return this.roomsList[roomid].clients;
   }
   size(){
     return Object.entries(this.roomsList).length;
