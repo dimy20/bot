@@ -31,18 +31,31 @@ function fakeRoom(name){
 fakeRoom("room");
 fakeRoom("room2");
 
+ 
+  function retrive_room(){
   const socket = net.connect({
     port : 5000,
     host : "room_service"
   })
   socket.on("connect",()=>{
-
-      socket.write(JSON.stringify({test:"test"}));
+    const request = JSON.stringify({
+      type : "retrieve_room",
+      data : {
+        roomName : "pibis"
+      }
+    })
+    socket.write(request);
+  })
+  socket.on("data",(chunk)=>{
+    const room_service_data = JSON.parse(chunk.toString());
+      console.log(room_service_data);
   })
   socket.on("error",(error)=>{
     console.log(error)
   })
-  
+ 
+  }
+  retrive_room();
 websocket.on("request",async (request)=>{
 
       if(!originIsAllowed(request.origin)){

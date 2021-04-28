@@ -6,15 +6,36 @@ const {room_model} = require("./db/room_model");
 
 server.on("connection",(socket)=>{
     socket.on("data",(chunk)=>{
-        const room_data = JSON.parse(Buffer.from(chunk).toString());
-        console.log(room_data);
-        const room = new room_model(room_data);
-        room.save().then(res=>{
-            console.log(res)
-        }).catch(err=>{
-            console.log(err);
-        })
-    })
+        const stream_data = JSON.parse(Buffer.from(chunk).toString());
+        if(stream_data.type === "create_room"){
+            const room = new room_model(room_data);
+            room.save().then(res=>{
+                console.log(res)
+            }).catch(err=>{
+                console.log(err);
+            })
+        }
+        if(stream_data.type === "retrieve_room"){
+            room_model.findOne({name: stream_data.data.roomName}).then(result=>{
+                if(result){
+
+            socket.write(JSON.stringify(result));
+                }else{
+
+                socket.write(JSON.stringify(""));
+                }
+                
+            }).catch(err=>{
+                console.log(err);
+            })
+            
+        }
+   })
+   socket.on("end",()=>{
+       console.log("endddd!");
+   })
+
+
     socket.on('end',()=>{console.log("connection closed")});
 });
 
