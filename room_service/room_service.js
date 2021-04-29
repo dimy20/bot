@@ -3,10 +3,13 @@ require("./db/index");
 const net = require("net");
 const server = net.createServer({});
 const {room_model} = require("./db/room_model");
-const ROOM_EVENTS = {
-    CREATE_ROOM : "CREATE_ROOM",
-    GET_ROOM: "GET_ROOM"
-}
+
+const enum_ipc_request = {
+    get_room : 1,
+    create_room : 2,
+} 
+Object.freeze(enum_ipc_request);
+
 class Response{
     constructor(success,data,error){
         this.success = success;
@@ -17,7 +20,7 @@ class Response{
 server.on("connection",(socket)=>{
     socket.on("data",(chunk)=>{
         const stream_data = JSON.parse(Buffer.from(chunk).toString());
-        if(stream_data.type === ROOM_EVENTS.CREATE_ROOM){
+        if(stream_data.type === enum_ipc_request.create_room){
             //check if room exists
             const room = new room_model(stream_data.data);
             room
@@ -30,12 +33,13 @@ server.on("connection",(socket)=>{
                 socket.write(JSON.stringify(new Response(false,null,err)));
             })
         }
-        if(stream_data.type === ROOM_EVENTS.GET_ROOM){
-            room_model.findOne({name: stream_data.data.roomName})
+        if(stream_data.type === enum_ipc_request.get_room){
+            room_model.findOne({name: stream_data.data.room_name})
             .then(res=>{
-                if(!result) socket.write(JSON.stringify(new Response(true,res,null)));
+                console.log(res);
+                if(res) socket.write(JSON.stringify(new Response(true,res,null)));
                 else
-                    socket.write(JSON.stringify(new Response(true,`room ${stream_data.data.roomName} was not found`,null)));
+                    socket.write(JSON.stringify(new Response(true,`room ${stream_data.data.room_name} was not found`,null)));
             }).catch(err=>{
                 console.log(err);
             })

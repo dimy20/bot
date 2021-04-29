@@ -44,7 +44,7 @@ class RoomList{
     if(this.size() > 0 && this.isRoomValid(roomName)){
         this.roomsList[roomName].addClient(client_id,roomName,websocketConnection);
     }else{
-      throw new Error(`${roomName} doesnt exist or there are no rooms available`);
+      throw new Error(`${roomName} is not available for users`);
     }
    return 0; 
   }
@@ -56,6 +56,19 @@ class RoomList{
     return Object.entries(this.roomsList).length;
   }
 }
+class IpcRequest{
+  //type must be an enum_ipc_request
+  constructor(type,data){
+      if(typeof type === "number"){
+        this.type = type;
+      }
+      if(typeof data === "object"){
+        this.data = data;
+      }
+      if(!this.data || !this.type) throw new Error("invalid args");
+  }
+}
 module.exports ={
-   RoomList 
+   RoomList,
+   IpcRequest
 }

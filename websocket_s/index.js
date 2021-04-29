@@ -1,4 +1,3 @@
-const net = require("net");
 const ws = require("websocket");
 const http = require("http");
 const {rooms}= require("./subscriber");
@@ -6,7 +5,7 @@ const APPID = process.env.APPID;
 const httpServer= http.createServer();
 const uuid = require("uuid");
 const {pub} = require("./publisher");
-const {GET_ROOM} = require("./internals/constants");
+const {ipc_get_room} = require("./internals/ipc/ipc");
 function originIsAllowed(origin) {
   //maybe check here if room exists.
   // put logic here to detect whether the specified origin is allowed.
@@ -32,40 +31,6 @@ fakeRoom("room");
 fakeRoom("room2");
 
  
-  function retrive_room(room_name){
-    const socket = net.connect({
-      port : 5000,
-      host : "room_service"
-    })
-    socket.on("connect",()=>{
-      const request = JSON.stringify({
-        type : GET_ROOM,
-        data : {
-          room_name
-        }
-      })
-      socket.write(request);
-    })
-    socket.on("data",(chunk)=>{
-      const room_service_data = JSON.parse(chunk.toString());
-      console.log(room_service_data);
-      if(!room_service_data) {
-        console.log(`A user tried to connect to ${room_name}, but does not exist`)
-        socket.emit("close");
-        return;
-        }
-        else{
-            rooms.saveRoom(room_service_data.name);
-
-        }
-
-
-    })
-    socket.on("error",(error)=>{
-      console.log(error)
-    })
- 
-  }
 websocket.on("request",async (request)=>{
 
       if(!originIsAllowed(request.origin)){
@@ -78,7 +43,13 @@ websocket.on("request",async (request)=>{
         When a new connections is accepted a new file descriptor is associated with this new socket connection
       */
       const room_name = request.httpRequest.url.split("/")[2];
-      retrive_room(room_name);
+      try {
+        const res = await ipc_get_room(room_name);
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+      
       console.log("new request to connec to ", room_name);
 
       const conn = request.accept(null,request.origin);
