@@ -16,23 +16,24 @@ function ipc_get_room(room_name){
         const room_data = JSON.parse(chunk.toString());
         if(!room_data) reject(new Error("No response from room service"));
         if(room_data.success){
+            socket.destroy();
             resolve(room_data.data);
         }
         
-        if(room_data.error)
+        
+        if(room_data.error){
+            socket.destroy();
             reject(room_data.error);
-        socket.emit("close");
-
-
-        })
+        }
+        
+    })
 
     socket.on("error",(error)=>{
-        console.log(error)
+            socket.destroy();
+            reject(error);
     })
 
-    })
-}
-
+    })}
 module.exports={
    ipc_get_room
 } 

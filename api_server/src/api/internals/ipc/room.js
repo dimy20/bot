@@ -1,7 +1,7 @@
 const net = require("net");
 const {enum_ipc_request} = require("../constants/constants");
 // this returns all the data related to the container creation if success
-async function createRoom(room){
+async function ipc_create_room(room){
     if(!room) return;
     return new Promise((resolve,reject)=>{
             const socket = net.connect({
@@ -27,15 +27,15 @@ async function createRoom(room){
             socket.on("data",(chunk)=>{
                 const res =  JSON.parse(chunk.toString());
                 if(res.success){
-                    socket.emit("close");
+                    socket.destroy();
                     resolve(res.data);
                 }
-                if(res.error) reject(res.error);
+                if(res.error) {socket.destroy(); reject(res.error);}
             })
     })
 
 
 }
 module.exports={
-    createRoom
+   ipc_create_room 
 }

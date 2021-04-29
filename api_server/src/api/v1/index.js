@@ -1,7 +1,7 @@
 const uuid = require("uuid");
 const router = require("express").Router();
 const { makeError } = require("../internals/ErrorHandlers/errorHandler");
-const {createRoom} = require("../internals/ipc/room")
+const {ipc_create_room} = require("../internals/ipc/room")
 const {validate_room_name,validate_expiration,validate_max_connections} = require("../internals/ErrorHandlers/validation");
  
 /* 
@@ -91,7 +91,7 @@ router.post("/room", async (req, res) => {
 		}
 		
 		try {
-			const data = await createRoom({name,max_connections,expiration,pwd});
+			const data = await ipc_create_room({name,max_connections,expiration,pwd});
 			res.status(200).json({
 				name : data.name,
 				max_connections : data.max_connections,
@@ -107,8 +107,6 @@ router.post("/room", async (req, res) => {
 
 
 	} catch (error) {
-		console.log("xd");
-		console.log(error);
 		res.status(error.statusCode).json({
 			error: error.message,
 			reason: error.reason,
