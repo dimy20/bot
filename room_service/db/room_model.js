@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const room_schema = new mongoose.Schema({
-    host: String,
     name : String,
+    max_connections : Number,
     connect: String,
     pwd :String,
     expires: Number,

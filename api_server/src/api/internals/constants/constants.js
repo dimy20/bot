@@ -24,6 +24,9 @@ const MESSAGE_ROOM_NAME_ERROR="invalid name value"
 const MESSAGE_ROOM_MAX_CONNECTIONS_ERROR= "invalid max_connections value";
 const MESSAGE_ROOM_CREATION_ERROR = "room initialization error";
 
+//IPC protocol constants
+const IPC_CREATE_ROOM = "CREATE_ROOM";
+
 // IMAGES
 module.exports = {
 	ROOM_NAME_MAX_CHARACTERS,
@@ -46,6 +49,7 @@ module.exports = {
     MESSAGE_ROOM_NAME_ERROR,
     MESSAGE_ROOM_CREATION_ERROR,
     MESSAGE_ROOM_MAX_CONNECTIONS_ERROR,
+    IPC_CREATE_ROOM
 };
 
 

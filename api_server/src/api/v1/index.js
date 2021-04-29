@@ -1,3 +1,4 @@
+const uuid = require("uuid");
 const router = require("express").Router();
 const { makeError } = require("../internals/ErrorHandlers/errorHandler");
 const {createRoom} = require("../internals/Bootstrapping/container")
@@ -20,6 +21,7 @@ const {
     MESSAGE_ROOM_NAME_ERROR,
     MESSAGE_ROOM_MAX_CONNECTIONS_ERROR,
 } = require("../internals/constants/constants");
+const { validate } = require("uuid");
 
 
 // this will change of course
@@ -49,12 +51,23 @@ Paramds
 			<usersLeave> => room gets removed when all users leave */
 
 router.post("/room", async (req, res) => {
+	function validate_pwd(pwd) {
+	//add logic here
+		return true;
+		//makeError(args);
+	}
 	//init defaults
 	let max_connections = ROOM_DEFAULT_MAX_CONNECTIONS;
 	let name = "random";
 	let expiration = ROOM_DEFAULT_EXPIRATION_VALUE;
-
+	let pwd = "";
 	try {
+		if(Boolean(req.body.pwd) && validate_pwd(req.body.pwd)){
+				pwd = req.body.pwd;
+		}else{
+			//if not pwd is sent, make random one
+			pwd = uuid.v3().split("-")[4];
+		}
 		if (Boolean(req.body.expiration)) {
 			if (Boolean(validate_expiration(req.body.expiration))) {
 				expiration = req.body.expiration;
@@ -76,9 +89,9 @@ router.post("/room", async (req, res) => {
 					max_connections = req.body.max_connections; 
 			else throw makeError(CODE_BAD_REQUEST,ROOM_MAX_CONNECTIONS_ALLOWED,REASON_ROOM_MAX_CONNECTIONS_ERROR,MESSAGE_ROOM_MAX_CONNECTIONS_ERROR);
 		}
-
-
-		createRoom(name);
+		
+			createRoom({name,max_connections,expiration,pwd});
+		
 
 
 	} catch (error) {
