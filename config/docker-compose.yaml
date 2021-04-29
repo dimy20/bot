@@ -30,6 +30,7 @@ services:
         build: ../room_service
         env_file:
             - ./db.env
+            - ../room_service/env/.env
         volumes:
         - /app/node_modules
         - ../room_service:/app
