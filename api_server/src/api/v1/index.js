@@ -90,7 +90,8 @@ router.post("/room", async (req, res) => {
 			else throw makeError(CODE_BAD_REQUEST,ROOM_MAX_CONNECTIONS_ALLOWED,REASON_ROOM_MAX_CONNECTIONS_ERROR,MESSAGE_ROOM_MAX_CONNECTIONS_ERROR);
 		}
 		
-		createRoom({name,max_connections,expiration,pwd},(data)=>{
+		try {
+			const data = await createRoom({name,max_connections,expiration,pwd});
 			res.status(200).json({
 				name : data.name,
 				max_connections : data.max_connections,
@@ -98,7 +99,9 @@ router.post("/room", async (req, res) => {
 				connect_url: data.connect,
 				pwd: data.pwd
 			});
-		});
+		} catch (error) {
+			console.log(error);
+		}
 
 		
 

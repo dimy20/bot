@@ -15,6 +15,7 @@ server.on("connection",(socket)=>{
             room.save().then(res=>{
                 socket.write(JSON.stringify(res));
             }).catch(err=>{
+                //notify error back to service requesting
                 console.log(err);
             })
         }
