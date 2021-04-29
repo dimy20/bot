@@ -3,6 +3,7 @@ const {IPC_CREATE_ROOM} = require("../constants/constants");
 // this returns all the data related to the container creation if sucess
 async function createRoom(room){
     if(!room) return;
+    let response = "";
     const socket = net.connect({
         port : 5000,
         host : "room_service"
@@ -11,16 +12,20 @@ async function createRoom(room){
             const room_json = {
                 type : IPC_CREATE_ROOM,
                 data : {
-                name: room.name,
-                expires:room.expiration,
-                connect: `ws://${process.env.DOMAIN_NAME}/aisdjasudhajda`,
-                pwd: room.pwd,
-                available : "next sunday"
+                    name: room.name,
+                    expires:room.expiration,
+                    max_connections: room.max_connections,
+                    connect: `ws://${process.env.DOMAIN_NAME}/${room.name}`,
+                    pwd: room.pwd,
+                    available : "next sunday"
             }
         }
-            socket.write(JSON.stringify(room_json));
-            socket.emit("close");
+            //socket.write(JSON.stringify(room_json));
+            //socket.emit("close");
 
+    })
+    socket.on("data",(chunk)=>{
+        console.log(chunk);
     })
 }
 module.exports={

@@ -35,8 +35,21 @@ function MediaTypeVerify(req, res, next) {
         application/json
         application/x-www-form-urlencoded
 */
-app.use(express.json());
-app.use(cors);
 app.use(MediaTypeVerify);
+app.use(cors);
+app.use(express.json());
+app.use(express.urlencoded());
+
+
+
 app.use("/api/v1", require("./v1/index"));
+app.use((err,req,res,next)=>{
+	//handles json syntax issues
+	if(err instanceof SyntaxError && err.status === 400 && "body" in err){
+		return res.status(400).json({
+			error : "invalid json syntax",
+		})
+	}
+	next();
+})
 module.exports = app;

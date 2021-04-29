@@ -21,7 +21,6 @@ const {
     MESSAGE_ROOM_NAME_ERROR,
     MESSAGE_ROOM_MAX_CONNECTIONS_ERROR,
 } = require("../internals/constants/constants");
-const { validate } = require("uuid");
 
 
 // this will change of course
@@ -61,6 +60,7 @@ router.post("/room", async (req, res) => {
 	let name = "random";
 	let expiration = ROOM_DEFAULT_EXPIRATION_VALUE;
 	let pwd = "";
+
 	try {
 		if(Boolean(req.body.pwd) && validate_pwd(req.body.pwd)){
 				pwd = req.body.pwd;
@@ -95,21 +95,22 @@ router.post("/room", async (req, res) => {
 
 
 	} catch (error) {
+		console.log("xd");
 		console.log(error);
-		res.status(error.statusCode).json({
+/* 		res.status(error.statusCode).json({
 			error: error.message,
 			reason: error.reason,
 			default: error.default,
-		});
+		}); */
 	}
 	
 
-	res.status(200).json({
+/* 	res.status(200).json({
 		name,
 		max_connections,
 		expiration,
 		connection_url: `ws://${process.env.DOMAIN_NAME}`
-	});
+	}); */
 });
 
 module.exports = router;

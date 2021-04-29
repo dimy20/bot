@@ -11,9 +11,9 @@ server.on("connection",(socket)=>{
     socket.on("data",(chunk)=>{
         const stream_data = JSON.parse(Buffer.from(chunk).toString());
         if(stream_data.type === ROOM_EVENTS.CREATE_ROOM){
-            const room = new room_model(room_data);
+            const room = new room_model(stream_data.data);
             room.save().then(res=>{
-                console.log(res)
+                socket.write(JSON.stringify(res));
             }).catch(err=>{
                 console.log(err);
             })
