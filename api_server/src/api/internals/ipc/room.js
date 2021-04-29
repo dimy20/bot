@@ -1,6 +1,6 @@
 const net = require("net");
-const {IPC_CREATE_ROOM} = require("../constants/constants");
-// this returns all the data related to the container creation if sucess
+const {enum_ipc_request} = require("../constants/constants");
+// this returns all the data related to the container creation if success
 async function createRoom(room){
     if(!room) return;
     return new Promise((resolve,reject)=>{
@@ -11,7 +11,7 @@ async function createRoom(room){
 
             socket.on("connect",()=>{
                 const room_json = {
-                    type : IPC_CREATE_ROOM,
+                    type : enum_ipc_request.create_room,
                     data : {
                             name: room.name,
                             expires:room.expiration,

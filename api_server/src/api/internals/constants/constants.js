@@ -27,6 +27,12 @@ const MESSAGE_ROOM_CREATION_ERROR = "room initialization error";
 //IPC protocol constants
 const IPC_CREATE_ROOM = "CREATE_ROOM";
 
+
+const enum_ipc_request = {
+    get_room : 1,
+    create_room : 2
+} 
+Object.freeze(enum_ipc_request);
 // IMAGES
 module.exports = {
 	ROOM_NAME_MAX_CHARACTERS,
@@ -49,7 +55,7 @@ module.exports = {
     MESSAGE_ROOM_NAME_ERROR,
     MESSAGE_ROOM_CREATION_ERROR,
     MESSAGE_ROOM_MAX_CONNECTIONS_ERROR,
-    IPC_CREATE_ROOM
+    enum_ipc_request
 };
 
 
