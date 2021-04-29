@@ -66,7 +66,7 @@ router.post("/room", async (req, res) => {
 				pwd = req.body.pwd;
 		}else{
 			//if not pwd is sent, make random one
-			pwd = uuid.v3().split("-")[4];
+			pwd = uuid.v1().split("-")[4];
 		}
 		if (Boolean(req.body.expiration)) {
 			if (Boolean(validate_expiration(req.body.expiration))) {
@@ -90,27 +90,31 @@ router.post("/room", async (req, res) => {
 			else throw makeError(CODE_BAD_REQUEST,ROOM_MAX_CONNECTIONS_ALLOWED,REASON_ROOM_MAX_CONNECTIONS_ERROR,MESSAGE_ROOM_MAX_CONNECTIONS_ERROR);
 		}
 		
-			createRoom({name,max_connections,expiration,pwd});
+		createRoom({name,max_connections,expiration,pwd},(data)=>{
+			res.status(200).json({
+				name : data.name,
+				max_connections : data.max_connections,
+				expiration : data.expiration,
+				connect_url: data.connect,
+				pwd: data.pwd
+			});
+		});
+
 		
 
 
 	} catch (error) {
 		console.log("xd");
 		console.log(error);
-/* 		res.status(error.statusCode).json({
+		res.status(error.statusCode).json({
 			error: error.message,
 			reason: error.reason,
 			default: error.default,
-		}); */
+		});
 	}
 	
 
-/* 	res.status(200).json({
-		name,
-		max_connections,
-		expiration,
-		connection_url: `ws://${process.env.DOMAIN_NAME}`
-	}); */
+	
 });
 
 module.exports = router;

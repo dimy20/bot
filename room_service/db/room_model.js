@@ -4,7 +4,7 @@ const room_schema = new mongoose.Schema({
     max_connections : Number,
     connect: String,
     pwd :String,
-    expires: Number,
+    expires: String, // onUserLeave or a string number representing hours to expire
     availabe:String,
 })
 
