@@ -38,13 +38,29 @@ websocket.on("request",async (request)=>{
         console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
         return;
         }
-
+      let conn = null;
+      let conn_id = "";
       /*
         When a new connections is accepted a new file descriptor is associated with this new socket connection
       */
       const room_name = request.httpRequest.url.split("/")[2];
       try {
-        const res = await ipc_get_room(room_name);
+        //this should only happen if the room is not in memory for users to connect, otherwise each time a users tries to connect, the same
+          // room will be appended to the rooms list, a noticeble bug
+         if(!rooms.isLoaded(room_name)){
+           /*load room data from db through rooms service and creates live representation on memory for users to connect 
+            this approach is done for optimization porpuses
+           */
+            const room = await ipc_get_room(room_name);
+            rooms.saveRoom(room.name);
+
+         }
+            conn = request.accept(null,request.origin);
+            conn_id = uuid.v1().split("-")[0];
+          //improve this
+          rooms.addClientToRoom(room_name,conn_id,conn);
+           //if room is already loaded into memory, meaning some users have connected already, then  just connect
+
         console.log(res);
       } catch (error) {
         console.log(error);
@@ -52,9 +68,6 @@ websocket.on("request",async (request)=>{
       
       console.log("new request to connec to ", room_name);
 
-      const conn = request.accept(null,request.origin);
-      const conn_id = uuid.v1().split("-")[0];
-      rooms.addClientToRoom(room_name,conn_id,conn);
       logger();
       conn.on("open", ()=>{console.log("!Welcome")});
       conn.on("close", () => {console.log("connection closed")

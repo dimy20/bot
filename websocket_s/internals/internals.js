@@ -29,8 +29,8 @@ class Room{
     }else{
       throw new Error("client_id must be of type string");
     }
-
   }
+
 }
 class RoomList{
   constructor(){
@@ -41,7 +41,7 @@ class RoomList{
       this.roomsList[id] = new Room(id);
   }
   addClientToRoom(roomName,client_id,websocketConnection){
-    if(this.size() > 0 && this.isRoomValid(roomName)){
+    if(this.size() > 0 && this.isLoaded(roomName)){
         this.roomsList[roomName].addClient(client_id,roomName,websocketConnection);
     }else{
       throw new Error(`${roomName} is not available for users`);
@@ -49,7 +49,7 @@ class RoomList{
    return 0; 
   }
   /*Validates if room exists*/
-  isRoomValid(room_name){
+  isLoaded(room_name){
     return typeof this.roomsList[room_name] !== 'undefined'
   }
   size(){
