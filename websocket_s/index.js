@@ -6,6 +6,7 @@ const httpServer= http.createServer();
 const uuid = require("uuid");
 const {pub} = require("./publisher");
 const {ipc_get_room} = require("./internals/ipc/ipc");
+const {ClientMessage} = require("./internals/internals");
 function originIsAllowed(origin) {
   //maybe check here if room exists.
   // put logic here to detect whether the specified origin is allowed.
@@ -61,7 +62,6 @@ websocket.on("request",async (request)=>{
           rooms.addClientToRoom(room_name,conn_id,conn);
            //if room is already loaded into memory, meaning some users have connected already, then  just connect
 
-        console.log(res);
       } catch (error) {
         console.log(error);
       }
@@ -70,19 +70,23 @@ websocket.on("request",async (request)=>{
 
       logger();
       conn.on("open", ()=>{console.log("!Welcome")});
+      //check this
       conn.on("close", () => {console.log("connection closed")
         const r = rooms.roomsList[conn.roomName];
         r.removeClient(conn.id);
     })
+      //webSocket event that fires when incoming data is received;
       conn.on("message", message => {
           //publish the message to redis
           console.log(`${APPID} Received message ${message.utf8Data}`)
-          const message_data = JSON.stringify({
+          // tranform this into a class
+          const msg = new ClientMessage(conn_id,room_name,msg);
+/*           const message_data = JSON.stringify({
               msg : message.utf8Data,
               room_id:room_name,
               user_id : conn_id
-          });
-          pub.publishData(message_data);
+          }); */
+          pub.publishData(msg);
       })
 });
 

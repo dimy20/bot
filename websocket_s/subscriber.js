@@ -17,7 +17,7 @@ subscriber.on("message",(channel,data)=>{
         try {
             // check if there actually are stablished connections, 
             // STUDY WHY THIS IS ZERO FOR A SHORT PERIOD
-            if(!rooms.isRoomValid(parsed_data.room_id)) throw new Error("Invalid room name");
+            if(!rooms.isLoaded(parsed_data.room_id)) throw new Error("Invalid room name");
             const room = rooms.roomsList[parsed_data.room_id];
 
             if(Object.entries(room.clients).length > 0 ){

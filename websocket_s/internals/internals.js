@@ -48,7 +48,7 @@ class RoomList{
     }
    return 0; 
   }
-  /*Validates if room exists*/
+  /*Checks if the room is loaded from the db*/
   isLoaded(room_name){
     return typeof this.roomsList[room_name] !== 'undefined'
   }
@@ -56,19 +56,28 @@ class RoomList{
     return Object.entries(this.roomsList).length;
   }
 }
+// this class defines the type of request to be sent to other processes over tcp
 class IpcRequest{
   //type must be an enum_ipc_request
-  constructor(type,data){
-      if(typeof type === "number"){
+  constructor(host,type,data){
+      // must be of type number, given that is trying to simulate an enum
+      if(typeof type === "number" && typeof data === "object" && typeof host === "string"){
         this.type = type;
-      }
-      if(typeof data === "object"){
         this.data = data;
+        this.host= host;
       }
       if(!this.data || !this.type) throw new Error("invalid args");
   }
 }
+class ClientMessage{
+  constructor(user_id,room_id,msg){
+      this.user_id = new String(user_id);
+      this.room_id= new String(room_id);
+      this.msg= new String(msg);
+  }
+}
 module.exports ={
    RoomList,
-   IpcRequest
+   IpcRequest,
+   ClientMessage
 }
