@@ -8,14 +8,12 @@ const config = {
     useNewUrlParser : true,
     useUnifiedTopology: true
 }
-/**
- * inits mongoose database 
-*/
+
 async function init_db(user,pass,db){
 const uri = `mongodb+srv://${user}:${pass}@cluster0.wb3ci.mongodb.net/${db}?retrywrites=true&w=majority`;
     try {
         await mongoose.connect(uri,config);
-        console.log("room service connected to database");
+        console.log("auth_service has connected to the database");
     } catch (error) {
         console.log(error);
     }

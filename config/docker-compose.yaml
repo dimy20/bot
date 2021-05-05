@@ -32,8 +32,17 @@ services:
             - ./db.env
             - ../room_service/env/.env
         volumes:
-        - /app/node_modules
-        - ../room_service:/app
+            - /app/node_modules
+            - ../room_service:/app
+    auth_service:
+        container_name: auth_service
+        build: ../auth_service
+        env_file:
+            - ./db.env
+            - ../auth_service/env/.env
+        volumes:
+            - /app/node_modules
+            - ../auth_service:/app
           
 
     websocket_s:

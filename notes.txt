@@ -114,7 +114,7 @@ PROBLEMS:
         availabe: <string> : indicates when room should be availabe for users to join 
 
 
-    POST api/v1/room => Endpoint will recerve an N amount of spots for each user.
+    POST api/v1/room => Endpoint will reserve N amount of spots for each user.
         user must be able to connect from multiple clients!
         so, suppose there are 18 connected users on room A, and user number 2, decides to 
         open 3 extra chrome tabs and connect to the room from each one of them, now, should
@@ -132,6 +132,12 @@ PROBLEMS:
         Rooms will be identified with a uuid, atatched to that uuid, there will be some structure
         containing the remaining information for that room. 
         
+        TODO:
+                room = room_name+user_id?random_string
+                [] sing up user
+                [] integrate user information at the time of creating new rooms.
+                
+        
     UPDATE api/v1/room/keepAlive :
         if sent before room expires string, expires value will be incremented to keep alive the room.
 
@@ -141,6 +147,7 @@ PROBLEMS:
     
         HOW TO ID USERS?
             Only room hosts should signed in.
+
             Since the main objective is that everything is as fast as possible, what do i mean
             by this?.
             you can get a link, a that should be it, you should be able to share that link around
@@ -155,6 +162,5 @@ PROBLEMS:
 
     WebSocket server resources concerns:
         
-
 
     
