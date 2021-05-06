@@ -7,12 +7,9 @@ function user_sign_up(user){
                 console.log(user);
                 const new_user = new user_model({username:user.username,email:user.email});
                 const test = await new_user.save();
+                delete test._v;
                 resolve(test);
-            socket.write(JSON.stringify({
-                        type : "test-response",
-                        data: {msg : "ack"},
-                        error: false,
-                    })) 
+            
             } catch (err) {
                 //grab error object keys
                 if(err instanceof mongoose.Error.ValidationError){

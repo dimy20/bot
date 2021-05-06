@@ -27,11 +27,8 @@ server.on("connection",(socket)=>{
         if(stream_data.type === enum_ipc_auth.sign_up){
             try {
                 const test = await user_sign_up(stream_data.data);
-                socket.write(JSON.stringify({
-                    type : "test-response",
-                    data: {msg : "ack"},
-                    error: false,
-                }))
+                console.log("testtt", test);
+                socket.write(JSON.stringify(test));
             } catch (err) {
                 //grab error object keys
                 socket.write(JSON.stringify(new Response(false,null,err)))
