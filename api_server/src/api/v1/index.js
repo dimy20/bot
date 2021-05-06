@@ -27,6 +27,7 @@ router.get("/auth", async (req,res)=>{
 		
 	const test = await ipc_auth_sign_in("hello from api server");
 	console.log(test)
+	
 	if(test){
 		res.json({
 			test

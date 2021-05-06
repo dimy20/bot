@@ -30,7 +30,7 @@ const enum_ipc_request = {
     create_room : 2,
 } 
 const enum_ipc_auth = {
-    sing_in : 1,
+    sign_up: 1,
     log_in : 2,
 }
 Object.freeze(enum_ipc_request);

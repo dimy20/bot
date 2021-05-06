@@ -1,5 +1,5 @@
 const net = require("net");
-const {enum_ipc_request} = require("../constants/constants");
+const {enum_ipc_request, enum_ipc_auth} = require("../constants/constants");
 // this returns all the data related to the container creation if success
 async function ipc_create_room(room){
     if(!room) return;
@@ -36,8 +36,8 @@ async function ipc_create_room(room){
 
 
 }
-async function ipc_auth_sign_in(data){
-    if(!data) return;
+async function ipc_auth_sign_in(user){
+    if(!user) return;
     return new Promise((resolve,reject)=>{
         const socket = net.connect({
             host: "auth_service",
@@ -45,15 +45,17 @@ async function ipc_auth_sign_in(data){
         })
         socket.on("connect",(arg)=>{
             console.log(arg);
-            const jsonData = JSON.stringify({
-                type : "test",
-                data: data,
-            })
-            socket.write(jsonData);
+            const sign_up_json = {
+                type: enum_ipc_auth.sign_up,
+                data: {
+                    username : user.username 
+                }
+            }
+            socket.write(JSON.stringify(sign_up_json));
         })
         socket.on("data",(data)=>{
             const response  = JSON.parse(data.toString());
-            if(response.error) return reject(reponse.error);
+            if(response.error) return reject(response.error);
             return resolve(response);
         })
     })

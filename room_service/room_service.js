@@ -41,6 +41,7 @@ server.on("connection",(socket)=>{
                 else
                     socket.write(JSON.stringify(new Response(true,`room ${stream_data.data.room_name} was not found`,null)));
             }).catch(err=>{
+                //fix this!!!!!
                 console.log(err);
             })
         }
