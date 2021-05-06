@@ -30,6 +30,7 @@ server.on("connection",(socket)=>{
             })
             .catch(err=>{
                 //notify error back to service requesting
+                //FIXX
                 socket.write(JSON.stringify(new Response(false,null,err)));
             })
         }
