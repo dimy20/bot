@@ -1,7 +1,7 @@
 const uuid = require("uuid");
 const router = require("express").Router();
 const { makeError } = require("../internals/ErrorHandlers/errorHandler");
-const {ipc_create_room} = require("../internals/ipc/room")
+const {ipc_create_room,ipc_auth_sign_in} = require("../internals/ipc/room")
 const {validate_room_name,validate_expiration,validate_max_connections} = require("../internals/ErrorHandlers/validation");
  
 /* 
@@ -22,7 +22,21 @@ const {
     MESSAGE_ROOM_MAX_CONNECTIONS_ERROR,
 } = require("../internals/constants/constants");
 
+router.get("/auth", async (req,res)=>{
+	try {
+		
+	const test = await ipc_auth_sign_in("hello from api server");
+	console.log(test)
+	if(test){
+		res.json({
+			test
+		})
+	}
+	} catch (error) {
+		console.log(error);
+	};
 
+})
 // this will change of course
 router.get("/",async (req,res)=>{
 	res.json({

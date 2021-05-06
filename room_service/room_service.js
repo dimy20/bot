@@ -45,7 +45,11 @@ server.on("connection",(socket)=>{
             })
         }
    })
-    socket.on('end',()=>{console.log("connection closed")});
+    socket.on('close',(err)=>{
+        if(err){console.log("transmission error ocurred")
+        console.log("connection closed");
+    }
+    })
 });
 
 server.on("error",(error)=>{console.log(error)});

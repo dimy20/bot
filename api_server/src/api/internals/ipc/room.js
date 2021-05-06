@@ -36,6 +36,29 @@ async function ipc_create_room(room){
 
 
 }
+async function ipc_auth_sign_in(data){
+    if(!data) return;
+    return new Promise((resolve,reject)=>{
+        const socket = net.connect({
+            host: "auth_service",
+            port: 5000,
+        })
+        socket.on("connect",(arg)=>{
+            console.log(arg);
+            const jsonData = JSON.stringify({
+                type : "test",
+                data: data,
+            })
+            socket.write(jsonData);
+        })
+        socket.on("data",(data)=>{
+            const response  = JSON.parse(data.toString());
+            if(response.error) return reject(reponse.error);
+            return resolve(response);
+        })
+    })
+}
 module.exports={
-   ipc_create_room 
+   ipc_create_room,
+   ipc_auth_sign_in
 }

@@ -24,12 +24,18 @@ const MESSAGE_ROOM_NAME_ERROR="invalid name value"
 const MESSAGE_ROOM_MAX_CONNECTIONS_ERROR= "invalid max_connections value";
 const MESSAGE_ROOM_CREATION_ERROR = "room initialization error";
 
-//IPC protocol constants
+//IPC protocol constants, js enums ??
 const enum_ipc_request = {
     get_room : 1,
-    create_room : 2
+    create_room : 2,
 } 
+const enum_ipc_auth = {
+    sing_in : 1,
+    log_in : 2,
+}
 Object.freeze(enum_ipc_request);
+Object.freeze(enum_ipc_auth);
+
 // IMAGES
 module.exports = {
 	ROOM_NAME_MAX_CHARACTERS,
@@ -52,7 +58,8 @@ module.exports = {
     MESSAGE_ROOM_NAME_ERROR,
     MESSAGE_ROOM_CREATION_ERROR,
     MESSAGE_ROOM_MAX_CONNECTIONS_ERROR,
-    enum_ipc_request
+    enum_ipc_request,
+    enum_ipc_auth
 };
 
 
