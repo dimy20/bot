@@ -47,9 +47,7 @@ async function ipc_auth_sign_in(user){
             console.log(arg);
             const sign_up_json = {
                 type: enum_ipc_auth.sign_up,
-                data: {
-                    username : user.username 
-                }
+                data: user
             }
             socket.write(JSON.stringify(sign_up_json));
         })

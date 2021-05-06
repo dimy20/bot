@@ -1,6 +1,5 @@
 require("./db/index");
 const {user_sign_up}= require("./db/utils");
-const {user_model} = require("./db/user_model");
 const net = require("net");
 const server = net.createServer();
 
@@ -27,8 +26,7 @@ server.on("connection",(socket)=>{
         const stream_data  = JSON.parse(chunk.toString());
         if(stream_data.type === enum_ipc_auth.sign_up){
             try {
-                const test = await user_sign_up("xd");
-                console.log(test);
+                const test = await user_sign_up(stream_data.data);
                 socket.write(JSON.stringify({
                     type : "test-response",
                     data: {msg : "ack"},

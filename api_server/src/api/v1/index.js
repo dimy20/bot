@@ -22,18 +22,15 @@ const {
     MESSAGE_ROOM_MAX_CONNECTIONS_ERROR,
 } = require("../internals/constants/constants");
 
-router.get("/auth", async (req,res)=>{
+router.post("/auth", async (req,res)=>{
 	try {
-		
-	const test = await ipc_auth_sign_in("hello from api server");
-	console.log(test)
-	
-	if(test){
-		res.json({
-			test
-		})
+		console.log(req.body);
+	const result = await ipc_auth_sign_in(req.body);
+	if(result){
+		res.json(result);
 	}
 	} catch (error) {
+		res.json(error);
 		console.log(error);
 	};
 
