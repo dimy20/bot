@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/main.dir/src/main.cpp.o CMakeFiles/main.dir/src/glad.c.o CMakeFiles/main.dir/src/Shader.cpp.o CMakeFiles/main.dir/src/stb_image.cpp.o CMakeFiles/main.dir/src/shapes.cpp.o  -o main  glfw/src/libglfw3.a -lGL -lpthread /usr/lib/x86_64-linux-gnu/librt.so -lm -ldl 
